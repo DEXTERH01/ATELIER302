@@ -1,0 +1,7 @@
+spring.jpa.hibernate.ddl-auto: validate
+atelier.cookie.secure: true
+logging:
+  level:
+    root: INFO
+    com.atelier.gestion: INFO
+

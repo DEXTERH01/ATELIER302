@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_ATELIER_TOBE" targetNamespace="https://atelier.pe/bpmn">
+  <bpmn:message id="Message_Request" name="Request"/>
+  <bpmn:message id="Message_AcceptQuote" name="AcceptQuote"/>
+  <bpmn:message id="Message_RejectQuote" name="RejectQuote"/>
+  <bpmn:message id="Message_Payment" name="Payment"/>
+  <bpmn:message id="Message_Study" name="Study"/>
+  <bpmn:message id="Message_Conformity" name="Conformity"/>
+  <bpmn:message id="Message_AdditionalPayment" name="AdditionalPayment"/>
+  <bpmn:message id="Message_EntityResponse" name="EntityResponse"/>
+  <bpmn:collaboration id="Collaboration_ATELIER">
+    <bpmn:participant id="Participant_Client" name="Cliente"/>
+    <bpmn:participant id="Participant_ATELIER" name="Gestión Digital de Proyectos ATELIER" processRef="Process_ATELIER_TOBE"/>
+    <bpmn:participant id="Participant_Entity" name="Entidad pública"/>
+    <bpmn:messageFlow id="MF01" name="Enviar solicitud" sourceRef="Participant_Client" targetRef="Start_Request"/>
+    <bpmn:messageFlow id="MF02" name="Cotización" sourceRef="Task_SendQuote" targetRef="Participant_Client"/>
+    <bpmn:messageFlow id="MF03" name="Aceptación" sourceRef="Participant_Client" targetRef="Event_AcceptQuote"/>
+    <bpmn:messageFlow id="MF04" name="Rechazo" sourceRef="Participant_Client" targetRef="Event_RejectQuote"/>
+    <bpmn:messageFlow id="MF05" name="Comprobante" sourceRef="Participant_Client" targetRef="Event_Payment"/>
+    <bpmn:messageFlow id="MF06" name="Solicitud de corrección" sourceRef="Task_RequestCorrection" targetRef="Participant_Client"/>
+    <bpmn:messageFlow id="MF07" name="Solicitud de estudio" sourceRef="Task_RequestStudy" targetRef="Participant_Client"/>
+    <bpmn:messageFlow id="MF08" name="Estudio técnico" sourceRef="Participant_Client" targetRef="Event_Study"/>
+    <bpmn:messageFlow id="MF09" name="Avance del diseño" sourceRef="Task_SendDesign" targetRef="Participant_Client"/>
+    <bpmn:messageFlow id="MF10" name="Conformidad u observaciones" sourceRef="Participant_Client" targetRef="Event_Conformity"/>
+    <bpmn:messageFlow id="MF11" name="Cotización adicional" sourceRef="Task_AdditionalQuote" targetRef="Participant_Client"/>
+    <bpmn:messageFlow id="MF12" name="Pago adicional" sourceRef="Participant_Client" targetRef="Event_AdditionalPayment"/>
+    <bpmn:messageFlow id="MF13" name="Expediente" sourceRef="Task_SubmitProcedure" targetRef="Participant_Entity"/>
+    <bpmn:messageFlow id="MF14" name="Respuesta u observaciones" sourceRef="Participant_Entity" targetRef="Event_EntityResponse"/>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_ATELIER_TOBE" name="TO-BE Gestión Digital de Proyectos ATELIER" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_ATELIER">
+      <bpmn:lane id="Lane_System" name="Sistema Gestión ATELIER"><bpmn:flowNodeRef>Task_RequestDocs</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_SendQuote</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_WaitQuote</bpmn:flowNodeRef><bpmn:flowNodeRef>Event_AcceptQuote</bpmn:flowNodeRef><bpmn:flowNodeRef>Event_RejectQuote</bpmn:flowNodeRef><bpmn:flowNodeRef>Event_QuoteExpired</bpmn:flowNodeRef><bpmn:flowNodeRef>End_QuoteRejected</bpmn:flowNodeRef><bpmn:flowNodeRef>Event_Payment</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_RequestCorrection</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_ActivateProject</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_RequestStudy</bpmn:flowNodeRef><bpmn:flowNodeRef>Event_Study</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_SendDesign</bpmn:flowNodeRef><bpmn:flowNodeRef>Event_Conformity</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_AdditionalQuote</bpmn:flowNodeRef><bpmn:flowNodeRef>Event_AdditionalPayment</bpmn:flowNodeRef><bpmn:flowNodeRef>Event_EntityResponse</bpmn:flowNodeRef></bpmn:lane>
+      <bpmn:lane id="Lane_Manager" name="Encargado del proyecto"><bpmn:flowNodeRef>Start_Request</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Register</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Complete</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Classify</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Quote</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_DecideRenew</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Renew</bpmn:flowNodeRef><bpmn:flowNodeRef>End_QuoteClosed</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_ValidatePayment</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_PaymentValid</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Plan</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Study</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_ValidateStudy</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_AssignSpecialties</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Consolidate</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Conform</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Changes</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Modify</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_ValidateAdditional</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_FinalFile</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Public</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_DeliverDirect</bpmn:flowNodeRef><bpmn:flowNodeRef>End_Delivered</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_SubmitProcedure</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Observed</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Fix</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Approved</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_AttachResolution</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_FinalDelivery</bpmn:flowNodeRef><bpmn:flowNodeRef>End_Approved</bpmn:flowNodeRef><bpmn:flowNodeRef>End_NotViable</bpmn:flowNodeRef></bpmn:lane>
+      <bpmn:lane id="Lane_Specialist" name="Especialistas internos / externos"><bpmn:flowNodeRef>Task_DevelopSpecialties</bpmn:flowNodeRef></bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_Request" name="Solicitud de proyecto recibida"><bpmn:messageEventDefinition messageRef="Message_Request"/></bpmn:startEvent>
+    <bpmn:userTask id="Task_Register" name="Registrar cliente, predio y requerimiento"/>
+    <bpmn:exclusiveGateway id="Gateway_Complete" name="¿Información completa?"/>
+    <bpmn:sendTask id="Task_RequestDocs" name="Solicitar documentos faltantes"/>
+    <bpmn:userTask id="Task_Classify" name="Clasificar tipo y complejidad"/>
+    <bpmn:userTask id="Task_Quote" name="Elaborar cotización"/>
+    <bpmn:sendTask id="Task_SendQuote" name="Enviar cotización y registrar vigencia"/>
+    <bpmn:eventBasedGateway id="Gateway_WaitQuote" name="Esperar respuesta (10 días)"/>
+    <bpmn:intermediateCatchEvent id="Event_AcceptQuote" name="Cotización aceptada"><bpmn:messageEventDefinition messageRef="Message_AcceptQuote"/></bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_RejectQuote" name="Cotización rechazada"><bpmn:messageEventDefinition messageRef="Message_RejectQuote"/></bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_QuoteExpired" name="Vencimiento: 10 días"><bpmn:timerEventDefinition><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="Task_DecideRenew" name="Evaluar renovación de cotización"/>
+    <bpmn:exclusiveGateway id="Gateway_Renew" name="¿Renovar?"/>
+    <bpmn:endEvent id="End_QuoteClosed" name="Cotización cerrada"/>
+    <bpmn:endEvent id="End_QuoteRejected" name="Cotización no aceptada"/>
+    <bpmn:intermediateCatchEvent id="Event_Payment" name="Comprobante de pago recibido"><bpmn:messageEventDefinition messageRef="Message_Payment"/></bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="Task_ValidatePayment" name="Validar pago"/>
+    <bpmn:exclusiveGateway id="Gateway_PaymentValid" name="¿Pago válido?"/>
+    <bpmn:sendTask id="Task_RequestCorrection" name="Solicitar corrección del pago"/>
+    <bpmn:serviceTask id="Task_ActivateProject" name="Crear código y expediente digital"/>
+    <bpmn:userTask id="Task_Plan" name="Planificar visita y actividades"/>
+    <bpmn:exclusiveGateway id="Gateway_Study" name="¿Requiere estudio técnico?"/>
+    <bpmn:sendTask id="Task_RequestStudy" name="Solicitar estudio de suelo o topografía"/>
+    <bpmn:intermediateCatchEvent id="Event_Study" name="Estudio técnico recibido"><bpmn:messageEventDefinition messageRef="Message_Study"/></bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="Task_ValidateStudy" name="Validar estudio técnico"/>
+    <bpmn:userTask id="Task_AssignSpecialties" name="Asignar especialidades y responsables"/>
+    <bpmn:userTask id="Task_DevelopSpecialties" name="Desarrollar y subir especialidades"/>
+    <bpmn:userTask id="Task_Consolidate" name="Consolidar diseño preliminar"/>
+    <bpmn:sendTask id="Task_SendDesign" name="Enviar avance para conformidad"/>
+    <bpmn:intermediateCatchEvent id="Event_Conformity" name="Respuesta del cliente recibida"><bpmn:messageEventDefinition messageRef="Message_Conformity"/></bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_Conform" name="¿Cliente conforme?"/>
+    <bpmn:exclusiveGateway id="Gateway_Changes" name="¿Más de dos cambios?"/>
+    <bpmn:userTask id="Task_Modify" name="Modificar diseño según observaciones"/>
+    <bpmn:sendTask id="Task_AdditionalQuote" name="Generar cotización adicional"/>
+    <bpmn:intermediateCatchEvent id="Event_AdditionalPayment" name="Pago adicional recibido"><bpmn:messageEventDefinition messageRef="Message_AdditionalPayment"/></bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="Task_ValidateAdditional" name="Validar pago adicional"/>
+    <bpmn:userTask id="Task_FinalFile" name="Generar expediente final"/>
+    <bpmn:exclusiveGateway id="Gateway_Public" name="¿Requiere trámite público?"/>
+    <bpmn:userTask id="Task_DeliverDirect" name="Entregar expediente final"/>
+    <bpmn:endEvent id="End_Delivered" name="Proyecto entregado y cerrado"/>
+    <bpmn:sendTask id="Task_SubmitProcedure" name="Registrar y enviar trámite"/>
+    <bpmn:intermediateCatchEvent id="Event_EntityResponse" name="Respuesta de la entidad recibida"><bpmn:messageEventDefinition messageRef="Message_EntityResponse"/></bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_Observed" name="¿Tiene observaciones?"/>
+    <bpmn:userTask id="Task_Fix" name="Subsanar observaciones"/>
+    <bpmn:exclusiveGateway id="Gateway_Approved" name="¿Trámite aprobado?"/>
+    <bpmn:userTask id="Task_AttachResolution" name="Adjuntar resolución o licencia"/>
+    <bpmn:userTask id="Task_FinalDelivery" name="Entregar proyecto aprobado"/>
+    <bpmn:endEvent id="End_Approved" name="Proyecto aprobado y cerrado"/>
+    <bpmn:endEvent id="End_NotViable" name="Trámite no viable"/>
+    <bpmn:sequenceFlow id="F01" sourceRef="Start_Request" targetRef="Task_Register"/>
+    <bpmn:sequenceFlow id="F02" sourceRef="Task_Register" targetRef="Gateway_Complete"/>
+    <bpmn:sequenceFlow id="F03" name="No" sourceRef="Gateway_Complete" targetRef="Task_RequestDocs"/>
+    <bpmn:sequenceFlow id="F04" name="Documentos recibidos" sourceRef="Task_RequestDocs" targetRef="Task_Register"/>
+    <bpmn:sequenceFlow id="F05" name="Sí" sourceRef="Gateway_Complete" targetRef="Task_Classify"/>
+    <bpmn:sequenceFlow id="F06" sourceRef="Task_Classify" targetRef="Task_Quote"/>
+    <bpmn:sequenceFlow id="F07" sourceRef="Task_Quote" targetRef="Task_SendQuote"/>
+    <bpmn:sequenceFlow id="F08" sourceRef="Task_SendQuote" targetRef="Gateway_WaitQuote"/>
+    <bpmn:sequenceFlow id="F09" name="Acepta" sourceRef="Gateway_WaitQuote" targetRef="Event_AcceptQuote"/>
+    <bpmn:sequenceFlow id="F10" name="Rechaza" sourceRef="Gateway_WaitQuote" targetRef="Event_RejectQuote"/>
+    <bpmn:sequenceFlow id="F11" name="Vence" sourceRef="Gateway_WaitQuote" targetRef="Event_QuoteExpired"/>
+    <bpmn:sequenceFlow id="F12" sourceRef="Event_RejectQuote" targetRef="End_QuoteRejected"/>
+    <bpmn:sequenceFlow id="F13" sourceRef="Event_QuoteExpired" targetRef="Task_DecideRenew"/>
+    <bpmn:sequenceFlow id="F14" sourceRef="Task_DecideRenew" targetRef="Gateway_Renew"/>
+    <bpmn:sequenceFlow id="F15" name="Sí" sourceRef="Gateway_Renew" targetRef="Task_Quote"/>
+    <bpmn:sequenceFlow id="F16" name="No" sourceRef="Gateway_Renew" targetRef="End_QuoteClosed"/>
+    <bpmn:sequenceFlow id="F17" sourceRef="Event_AcceptQuote" targetRef="Event_Payment"/>
+    <bpmn:sequenceFlow id="F18" sourceRef="Event_Payment" targetRef="Task_ValidatePayment"/>
+    <bpmn:sequenceFlow id="F19" sourceRef="Task_ValidatePayment" targetRef="Gateway_PaymentValid"/>
+    <bpmn:sequenceFlow id="F20" name="No" sourceRef="Gateway_PaymentValid" targetRef="Task_RequestCorrection"/>
+    <bpmn:sequenceFlow id="F21" name="Comprobante corregido" sourceRef="Task_RequestCorrection" targetRef="Event_Payment"/>
+    <bpmn:sequenceFlow id="F22" name="Sí" sourceRef="Gateway_PaymentValid" targetRef="Task_ActivateProject"/>
+    <bpmn:sequenceFlow id="F23" sourceRef="Task_ActivateProject" targetRef="Task_Plan"/>
+    <bpmn:sequenceFlow id="F24" sourceRef="Task_Plan" targetRef="Gateway_Study"/>
+    <bpmn:sequenceFlow id="F25" name="Sí" sourceRef="Gateway_Study" targetRef="Task_RequestStudy"/>
+    <bpmn:sequenceFlow id="F26" sourceRef="Task_RequestStudy" targetRef="Event_Study"/>
+    <bpmn:sequenceFlow id="F27" sourceRef="Event_Study" targetRef="Task_ValidateStudy"/>
+    <bpmn:sequenceFlow id="F28" name="Estudio válido" sourceRef="Task_ValidateStudy" targetRef="Task_AssignSpecialties"/>
+    <bpmn:sequenceFlow id="F29" name="No" sourceRef="Gateway_Study" targetRef="Task_AssignSpecialties"/>
+    <bpmn:sequenceFlow id="F30" sourceRef="Task_AssignSpecialties" targetRef="Task_DevelopSpecialties"/>
+    <bpmn:sequenceFlow id="F31" name="Especialidades completas" sourceRef="Task_DevelopSpecialties" targetRef="Task_Consolidate"/>
+    <bpmn:sequenceFlow id="F32" sourceRef="Task_Consolidate" targetRef="Task_SendDesign"/>
+    <bpmn:sequenceFlow id="F33" sourceRef="Task_SendDesign" targetRef="Event_Conformity"/>
+    <bpmn:sequenceFlow id="F34" sourceRef="Event_Conformity" targetRef="Gateway_Conform"/>
+    <bpmn:sequenceFlow id="F35" name="Sí" sourceRef="Gateway_Conform" targetRef="Task_FinalFile"/>
+    <bpmn:sequenceFlow id="F36" name="No" sourceRef="Gateway_Conform" targetRef="Gateway_Changes"/>
+    <bpmn:sequenceFlow id="F37" name="No" sourceRef="Gateway_Changes" targetRef="Task_Modify"/>
+    <bpmn:sequenceFlow id="F38" name="Nueva versión" sourceRef="Task_Modify" targetRef="Task_SendDesign"/>
+    <bpmn:sequenceFlow id="F39" name="Sí" sourceRef="Gateway_Changes" targetRef="Task_AdditionalQuote"/>
+    <bpmn:sequenceFlow id="F40" sourceRef="Task_AdditionalQuote" targetRef="Event_AdditionalPayment"/>
+    <bpmn:sequenceFlow id="F41" sourceRef="Event_AdditionalPayment" targetRef="Task_ValidateAdditional"/>
+    <bpmn:sequenceFlow id="F42" name="Pago confirmado" sourceRef="Task_ValidateAdditional" targetRef="Task_Modify"/>
+    <bpmn:sequenceFlow id="F43" sourceRef="Task_FinalFile" targetRef="Gateway_Public"/>
+    <bpmn:sequenceFlow id="F44" name="No" sourceRef="Gateway_Public" targetRef="Task_DeliverDirect"/>
+    <bpmn:sequenceFlow id="F45" sourceRef="Task_DeliverDirect" targetRef="End_Delivered"/>
+    <bpmn:sequenceFlow id="F46" name="Sí" sourceRef="Gateway_Public" targetRef="Task_SubmitProcedure"/>
+    <bpmn:sequenceFlow id="F47" sourceRef="Task_SubmitProcedure" targetRef="Event_EntityResponse"/>
+    <bpmn:sequenceFlow id="F48" sourceRef="Event_EntityResponse" targetRef="Gateway_Observed"/>
+    <bpmn:sequenceFlow id="F49" name="Sí" sourceRef="Gateway_Observed" targetRef="Task_Fix"/>
+    <bpmn:sequenceFlow id="F50" name="Reenviar" sourceRef="Task_Fix" targetRef="Task_SubmitProcedure"/>
+    <bpmn:sequenceFlow id="F51" name="No" sourceRef="Gateway_Observed" targetRef="Gateway_Approved"/>
+    <bpmn:sequenceFlow id="F52" name="Sí" sourceRef="Gateway_Approved" targetRef="Task_AttachResolution"/>
+    <bpmn:sequenceFlow id="F53" sourceRef="Task_AttachResolution" targetRef="Task_FinalDelivery"/>
+    <bpmn:sequenceFlow id="F54" sourceRef="Task_FinalDelivery" targetRef="End_Approved"/>
+    <bpmn:sequenceFlow id="F55" name="No" sourceRef="Gateway_Approved" targetRef="End_NotViable"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ATELIER">
+    <bpmndi:BPMNPlane id="BPMNPlane_ATELIER" bpmnElement="Collaboration_ATELIER">
+      <bpmndi:BPMNShape id="Participant_Client_di" bpmnElement="Participant_Client" isHorizontal="true"><dc:Bounds x="30" y="30" width="5000" height="120"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_ATELIER_di" bpmnElement="Participant_ATELIER" isHorizontal="true"><dc:Bounds x="30" y="190" width="5000" height="720"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_System_di" bpmnElement="Lane_System" isHorizontal="true"><dc:Bounds x="60" y="190" width="4970" height="180"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Manager_di" bpmnElement="Lane_Manager" isHorizontal="true"><dc:Bounds x="60" y="370" width="4970" height="330"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Specialist_di" bpmnElement="Lane_Specialist" isHorizontal="true"><dc:Bounds x="60" y="700" width="4970" height="210"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_Entity_di" bpmnElement="Participant_Entity" isHorizontal="true"><dc:Bounds x="30" y="950" width="5000" height="120"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_Request_di" bpmnElement="Start_Request"><dc:Bounds x="140" y="500" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Register_di" bpmnElement="Task_Register"><dc:Bounds x="220" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Complete_di" bpmnElement="Gateway_Complete"><dc:Bounds x="370" y="490" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RequestDocs_di" bpmnElement="Task_RequestDocs"><dc:Bounds x="480" y="245" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Classify_di" bpmnElement="Task_Classify"><dc:Bounds x="500" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Quote_di" bpmnElement="Task_Quote"><dc:Bounds x="650" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SendQuote_di" bpmnElement="Task_SendQuote"><dc:Bounds x="800" y="245" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_WaitQuote_di" bpmnElement="Gateway_WaitQuote"><dc:Bounds x="950" y="255" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_AcceptQuote_di" bpmnElement="Event_AcceptQuote"><dc:Bounds x="1070" y="225" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_RejectQuote_di" bpmnElement="Event_RejectQuote"><dc:Bounds x="1070" y="290" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_QuoteExpired_di" bpmnElement="Event_QuoteExpired"><dc:Bounds x="1070" y="350" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_DecideRenew_di" bpmnElement="Task_DecideRenew"><dc:Bounds x="1190" y="560" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Renew_di" bpmnElement="Gateway_Renew"><dc:Bounds x="1330" y="570" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_QuoteClosed_di" bpmnElement="End_QuoteClosed"><dc:Bounds x="1470" y="580" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_QuoteRejected_di" bpmnElement="End_QuoteRejected"><dc:Bounds x="1190" y="300" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Payment_di" bpmnElement="Event_Payment"><dc:Bounds x="1190" y="225" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ValidatePayment_di" bpmnElement="Task_ValidatePayment"><dc:Bounds x="1330" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_PaymentValid_di" bpmnElement="Gateway_PaymentValid"><dc:Bounds x="1480" y="490" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RequestCorrection_di" bpmnElement="Task_RequestCorrection"><dc:Bounds x="1590" y="245" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ActivateProject_di" bpmnElement="Task_ActivateProject"><dc:Bounds x="1590" y="315" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Plan_di" bpmnElement="Task_Plan"><dc:Bounds x="1740" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Study_di" bpmnElement="Gateway_Study"><dc:Bounds x="1890" y="490" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RequestStudy_di" bpmnElement="Task_RequestStudy"><dc:Bounds x="2010" y="245" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Study_di" bpmnElement="Event_Study"><dc:Bounds x="2150" y="260" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ValidateStudy_di" bpmnElement="Task_ValidateStudy"><dc:Bounds x="2250" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AssignSpecialties_di" bpmnElement="Task_AssignSpecialties"><dc:Bounds x="2400" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_DevelopSpecialties_di" bpmnElement="Task_DevelopSpecialties"><dc:Bounds x="2550" y="755" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Consolidate_di" bpmnElement="Task_Consolidate"><dc:Bounds x="2700" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SendDesign_di" bpmnElement="Task_SendDesign"><dc:Bounds x="2850" y="245" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Conformity_di" bpmnElement="Event_Conformity"><dc:Bounds x="2990" y="260" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Conform_di" bpmnElement="Gateway_Conform"><dc:Bounds x="3100" y="490" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Changes_di" bpmnElement="Gateway_Changes"><dc:Bounds x="3240" y="600" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Modify_di" bpmnElement="Task_Modify"><dc:Bounds x="3390" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AdditionalQuote_di" bpmnElement="Task_AdditionalQuote"><dc:Bounds x="3390" y="245" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_AdditionalPayment_di" bpmnElement="Event_AdditionalPayment"><dc:Bounds x="3540" y="260" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ValidateAdditional_di" bpmnElement="Task_ValidateAdditional"><dc:Bounds x="3660" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_FinalFile_di" bpmnElement="Task_FinalFile"><dc:Bounds x="3240" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Public_di" bpmnElement="Gateway_Public"><dc:Bounds x="3800" y="490" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_DeliverDirect_di" bpmnElement="Task_DeliverDirect"><dc:Bounds x="3940" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Delivered_di" bpmnElement="End_Delivered"><dc:Bounds x="4090" y="500" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SubmitProcedure_di" bpmnElement="Task_SubmitProcedure"><dc:Bounds x="3940" y="590" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_EntityResponse_di" bpmnElement="Event_EntityResponse"><dc:Bounds x="4100" y="260" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Observed_di" bpmnElement="Gateway_Observed"><dc:Bounds x="4230" y="490" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Fix_di" bpmnElement="Task_Fix"><dc:Bounds x="4370" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Approved_di" bpmnElement="Gateway_Approved"><dc:Bounds x="4370" y="600" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AttachResolution_di" bpmnElement="Task_AttachResolution"><dc:Bounds x="4510" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_FinalDelivery_di" bpmnElement="Task_FinalDelivery"><dc:Bounds x="4660" y="480" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Approved_di" bpmnElement="End_Approved"><dc:Bounds x="4810" y="500" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_NotViable_di" bpmnElement="End_NotViable"><dc:Bounds x="4510" y="620" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="F01_di" bpmnElement="F01"><di:waypoint x="158" y="518"/><di:waypoint x="280" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F02_di" bpmnElement="F02"><di:waypoint x="280" y="515"/><di:waypoint x="395" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F03_di" bpmnElement="F03"><di:waypoint x="395" y="515"/><di:waypoint x="540" y="280"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F04_di" bpmnElement="F04"><di:waypoint x="540" y="280"/><di:waypoint x="280" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F05_di" bpmnElement="F05"><di:waypoint x="395" y="515"/><di:waypoint x="560" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F06_di" bpmnElement="F06"><di:waypoint x="560" y="515"/><di:waypoint x="710" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F07_di" bpmnElement="F07"><di:waypoint x="710" y="515"/><di:waypoint x="860" y="280"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F08_di" bpmnElement="F08"><di:waypoint x="860" y="280"/><di:waypoint x="975" y="280"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F09_di" bpmnElement="F09"><di:waypoint x="975" y="280"/><di:waypoint x="1088" y="243"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F10_di" bpmnElement="F10"><di:waypoint x="975" y="280"/><di:waypoint x="1088" y="308"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F11_di" bpmnElement="F11"><di:waypoint x="975" y="280"/><di:waypoint x="1088" y="368"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F12_di" bpmnElement="F12"><di:waypoint x="1088" y="308"/><di:waypoint x="1208" y="318"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F13_di" bpmnElement="F13"><di:waypoint x="1088" y="368"/><di:waypoint x="1250" y="595"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F14_di" bpmnElement="F14"><di:waypoint x="1250" y="595"/><di:waypoint x="1355" y="595"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F15_di" bpmnElement="F15"><di:waypoint x="1355" y="595"/><di:waypoint x="710" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F16_di" bpmnElement="F16"><di:waypoint x="1355" y="595"/><di:waypoint x="1488" y="598"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F17_di" bpmnElement="F17"><di:waypoint x="1088" y="243"/><di:waypoint x="1208" y="243"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F18_di" bpmnElement="F18"><di:waypoint x="1208" y="243"/><di:waypoint x="1390" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F19_di" bpmnElement="F19"><di:waypoint x="1390" y="515"/><di:waypoint x="1505" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F20_di" bpmnElement="F20"><di:waypoint x="1505" y="515"/><di:waypoint x="1650" y="280"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F21_di" bpmnElement="F21"><di:waypoint x="1650" y="280"/><di:waypoint x="1208" y="243"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F22_di" bpmnElement="F22"><di:waypoint x="1505" y="515"/><di:waypoint x="1650" y="350"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F23_di" bpmnElement="F23"><di:waypoint x="1650" y="350"/><di:waypoint x="1800" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F24_di" bpmnElement="F24"><di:waypoint x="1800" y="515"/><di:waypoint x="1915" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F25_di" bpmnElement="F25"><di:waypoint x="1915" y="515"/><di:waypoint x="2070" y="280"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F26_di" bpmnElement="F26"><di:waypoint x="2070" y="280"/><di:waypoint x="2168" y="278"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F27_di" bpmnElement="F27"><di:waypoint x="2168" y="278"/><di:waypoint x="2310" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F28_di" bpmnElement="F28"><di:waypoint x="2310" y="515"/><di:waypoint x="2460" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F29_di" bpmnElement="F29"><di:waypoint x="1915" y="515"/><di:waypoint x="2460" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F30_di" bpmnElement="F30"><di:waypoint x="2460" y="515"/><di:waypoint x="2610" y="790"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F31_di" bpmnElement="F31"><di:waypoint x="2610" y="790"/><di:waypoint x="2760" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F32_di" bpmnElement="F32"><di:waypoint x="2760" y="515"/><di:waypoint x="2910" y="280"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F33_di" bpmnElement="F33"><di:waypoint x="2910" y="280"/><di:waypoint x="3008" y="278"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F34_di" bpmnElement="F34"><di:waypoint x="3008" y="278"/><di:waypoint x="3125" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F35_di" bpmnElement="F35"><di:waypoint x="3125" y="515"/><di:waypoint x="3300" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F36_di" bpmnElement="F36"><di:waypoint x="3125" y="515"/><di:waypoint x="3265" y="625"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F37_di" bpmnElement="F37"><di:waypoint x="3265" y="625"/><di:waypoint x="3450" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F38_di" bpmnElement="F38"><di:waypoint x="3450" y="515"/><di:waypoint x="2910" y="280"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F39_di" bpmnElement="F39"><di:waypoint x="3265" y="625"/><di:waypoint x="3450" y="280"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F40_di" bpmnElement="F40"><di:waypoint x="3450" y="280"/><di:waypoint x="3558" y="278"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F41_di" bpmnElement="F41"><di:waypoint x="3558" y="278"/><di:waypoint x="3720" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F42_di" bpmnElement="F42"><di:waypoint x="3720" y="515"/><di:waypoint x="3450" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F43_di" bpmnElement="F43"><di:waypoint x="3300" y="515"/><di:waypoint x="3825" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F44_di" bpmnElement="F44"><di:waypoint x="3825" y="515"/><di:waypoint x="4000" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F45_di" bpmnElement="F45"><di:waypoint x="4000" y="515"/><di:waypoint x="4108" y="518"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F46_di" bpmnElement="F46"><di:waypoint x="3825" y="515"/><di:waypoint x="4000" y="625"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F47_di" bpmnElement="F47"><di:waypoint x="4000" y="625"/><di:waypoint x="4118" y="278"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F48_di" bpmnElement="F48"><di:waypoint x="4118" y="278"/><di:waypoint x="4255" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F49_di" bpmnElement="F49"><di:waypoint x="4255" y="515"/><di:waypoint x="4430" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F50_di" bpmnElement="F50"><di:waypoint x="4430" y="515"/><di:waypoint x="4000" y="625"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F51_di" bpmnElement="F51"><di:waypoint x="4255" y="515"/><di:waypoint x="4395" y="625"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F52_di" bpmnElement="F52"><di:waypoint x="4395" y="625"/><di:waypoint x="4570" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F53_di" bpmnElement="F53"><di:waypoint x="4570" y="515"/><di:waypoint x="4720" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F54_di" bpmnElement="F54"><di:waypoint x="4720" y="515"/><di:waypoint x="4828" y="518"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F55_di" bpmnElement="F55"><di:waypoint x="4395" y="625"/><di:waypoint x="4528" y="638"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF01_di" bpmnElement="MF01"><di:waypoint x="2520" y="90"/><di:waypoint x="158" y="518"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF02_di" bpmnElement="MF02"><di:waypoint x="860" y="280"/><di:waypoint x="2520" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF03_di" bpmnElement="MF03"><di:waypoint x="2520" y="90"/><di:waypoint x="1088" y="243"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF04_di" bpmnElement="MF04"><di:waypoint x="2520" y="90"/><di:waypoint x="1088" y="308"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF05_di" bpmnElement="MF05"><di:waypoint x="2520" y="90"/><di:waypoint x="1208" y="243"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF06_di" bpmnElement="MF06"><di:waypoint x="1650" y="280"/><di:waypoint x="2520" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF07_di" bpmnElement="MF07"><di:waypoint x="2070" y="280"/><di:waypoint x="2520" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF08_di" bpmnElement="MF08"><di:waypoint x="2520" y="90"/><di:waypoint x="2168" y="278"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF09_di" bpmnElement="MF09"><di:waypoint x="2910" y="280"/><di:waypoint x="2520" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF10_di" bpmnElement="MF10"><di:waypoint x="2520" y="90"/><di:waypoint x="3008" y="278"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF11_di" bpmnElement="MF11"><di:waypoint x="3450" y="280"/><di:waypoint x="2520" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF12_di" bpmnElement="MF12"><di:waypoint x="2520" y="90"/><di:waypoint x="3558" y="278"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF13_di" bpmnElement="MF13"><di:waypoint x="4000" y="625"/><di:waypoint x="4200" y="1010"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF14_di" bpmnElement="MF14"><di:waypoint x="4200" y="1010"/><di:waypoint x="4118" y="278"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

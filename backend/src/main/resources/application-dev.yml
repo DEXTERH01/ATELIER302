@@ -1,0 +1,6 @@
+spring.flyway.locations: classpath:db/migration,classpath:db/demo
+logging:
+  level:
+    com.atelier.gestion: DEBUG
+    org.springframework.security: INFO
+
