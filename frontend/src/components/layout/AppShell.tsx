@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  ReceiptText,
   Users,
   X,
 } from 'lucide-react';
@@ -17,6 +18,7 @@ import { AtelierLogo } from '../brand/AtelierLogo';
 const links: { to: string; label: string; icon: typeof LayoutDashboard; roles?: Rol[] }[] = [
   { to: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
   { to: '/proyectos', label: 'Proyectos', icon: FolderKanban },
+  { to: '/pagos', label: 'Pagos', icon: ReceiptText, roles: ['ADMINISTRADOR'] },
   { to: '/clientes', label: 'Clientes', icon: Building2, roles: ['ADMINISTRADOR', 'ENCARGADO'] },
   { to: '/empleados', label: 'Empleados', icon: BriefcaseBusiness, roles: ['ADMINISTRADOR'] },
   { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['ADMINISTRADOR'] },

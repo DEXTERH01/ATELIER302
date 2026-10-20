@@ -1,6 +1,7 @@
 package com.atelier.gestion.proyecto.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -10,6 +11,8 @@ import com.atelier.gestion.cliente.repository.ClienteRepository;
 import com.atelier.gestion.cliente.service.ClienteService;
 import com.atelier.gestion.empleado.service.EmpleadoService;
 import com.atelier.gestion.proyecto.dto.ProyectoDtos.Crear;
+import com.atelier.gestion.proyecto.dto.ProyectoDtos.Transicion;
+import com.atelier.gestion.common.exception.ReglaNegocioException;
 import com.atelier.gestion.proyecto.entity.*;
 import com.atelier.gestion.proyecto.repository.*;
 import com.atelier.gestion.security.SesionActual;
@@ -60,5 +63,14 @@ class ProyectoServiceTest {
     assertThat(captor.getValue().getEncargado()).isNull();
     verifyNoInteractions(empleadoService);
     verify(historial).save(any(HistorialEstado.class));
+  }
+
+  @Test void noPermiteActivarProyectoPorTransicionManual() {
+    UUID id=UUID.randomUUID();Rol rol=mock(Rol.class);Usuario usuario=mock(Usuario.class);
+    when(rol.getNombre()).thenReturn("ENCARGADO");when(usuario.getRol()).thenReturn(rol);
+    when(sesion.usuario()).thenReturn(usuario);when(proyectos.bloquear(id)).thenReturn(java.util.Optional.of(mock(Proyecto.class)));
+    assertThatThrownBy(()->service.transicionar(id,new Transicion(EstadoProyecto.PROYECTO_ACTIVO,null)))
+        .isInstanceOf(ReglaNegocioException.class).hasMessageContaining("cotización");
+    verifyNoInteractions(politica);
   }
 }

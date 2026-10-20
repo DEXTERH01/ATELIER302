@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, CheckCircle2, ClipboardList, History, Trash2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ClipboardList, History, Landmark, Trash2 } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PageHeader } from '../../../components/layout/PageHeader';
@@ -8,6 +8,7 @@ import { useAuth } from '../../auth/AuthContext';
 import type { EstadoProyecto } from '../../../types/domain';
 import * as api from '../api/proyectosApi';
 import { estadoEtiquetas, siguientesEstados } from '../projectState';
+import { ProjectCommercialPanel } from '../../cotizaciones/components/ProjectCommercialPanel';
 
 const campo = 'rounded-lg border border-atelier-stone bg-white px-3 py-2.5';
 const fechaHora = new Intl.DateTimeFormat('es-PE', {
@@ -19,7 +20,7 @@ export function ProjectDetailPage() {
   const { id = '' } = useParams();
   const { usuario } = useAuth();
   const qc = useQueryClient();
-  const [tab, setTab] = useState<'requerimientos' | 'historial'>('requerimientos');
+  const [tab, setTab] = useState<'requerimientos' | 'comercial' | 'historial'>('requerimientos');
   const proyecto = useQuery({ queryKey: ['proyecto', id], queryFn: () => api.obtener(id), enabled: !!id });
   const requisitos = useQuery({
     queryKey: ['proyecto', id, 'requerimientos'],
@@ -114,6 +115,13 @@ export function ProjectDetailPage() {
           </article>
           <div className="mt-6 flex gap-2 border-b border-atelier-stone">
             <button
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'comercial' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
+              onClick={() => setTab('comercial')}
+            >
+              <Landmark size={17} />
+              Comercial
+            </button>
+            <button
               className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'requerimientos' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
               onClick={() => setTab('requerimientos')}
             >
@@ -203,6 +211,8 @@ export function ProjectDetailPage() {
                 </form>
               )}
             </section>
+          ) : tab === 'comercial' ? (
+            <ProjectCommercialPanel proyecto={p} />
           ) : (
             <section className="mt-4 grid gap-3">
               {historial.data?.map((h) => (

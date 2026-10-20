@@ -32,6 +32,13 @@ atelier:
   cookie:
     name: ATELIER_REFRESH
     secure: ${REFRESH_COOKIE_SECURE:false}
+  environment: ${ATELIER_ENVIRONMENT:dev}
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME:change_me}
+    api-key: ${CLOUDINARY_API_KEY:change_me}
+    api-secret: ${CLOUDINARY_API_SECRET:change_me}
+  files:
+    max-upload-bytes: ${MAX_UPLOAD_BYTES:10485760}
 management:
   endpoints.web.exposure.include: health,info
   endpoint.health.show-details: never

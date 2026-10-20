@@ -27,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProyectoService {
   private static final Set<EstadoProyecto> ESTADOS_EDITABLES_CLIENTE =
       Set.of(EstadoProyecto.SOLICITUD_REGISTRADA, EstadoProyecto.DATOS_INCOMPLETOS);
+  private static final Set<EstadoProyecto> ESTADOS_GESTIONADOS_POR_FLUJO =
+      Set.of(EstadoProyecto.COTIZACION_ENVIADA, EstadoProyecto.ESPERANDO_PAGO,
+          EstadoProyecto.PAGO_EN_REVISION, EstadoProyecto.PROYECTO_ACTIVO);
 
   private final ProyectoRepository proyectos;
   private final RequerimientoRepository requerimientos;
@@ -141,6 +144,10 @@ public class ProyectoService {
     if (!esGestor(actual)) throw new AccessDeniedException("Solo un gestor puede cambiar el estado");
     Proyecto proyecto = proyectos.bloquear(id)
         .orElseThrow(() -> new RecursoNoEncontradoException("Proyecto no encontrado"));
+    if (ESTADOS_GESTIONADOS_POR_FLUJO.contains(req.estado())) {
+      throw new ReglaNegocioException(
+          "Este estado solo puede alcanzarse mediante cotización y validación de pagos");
+    }
     EstadoProyecto anterior = proyecto.getEstado();
     long obligatorios = requerimientos.countByProyectoIdAndObligatorioTrue(id);
     long pendientes = requerimientos.countByProyectoIdAndObligatorioTrueAndCompletadoFalse(id);

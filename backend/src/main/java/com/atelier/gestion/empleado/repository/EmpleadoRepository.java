@@ -11,5 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface EmpleadoRepository extends JpaRepository<Empleado,UUID> {
   boolean existsByUsuarioId(UUID usuarioId);
   @Override @EntityGraph(attributePaths={"usuario","usuario.rol"}) Optional<Empleado> findById(UUID id);
+  @EntityGraph(attributePaths={"usuario","usuario.rol"}) Optional<Empleado> findByUsuarioCorreoIgnoreCase(String correo);
   @EntityGraph(attributePaths={"usuario","usuario.rol"}) Page<Empleado> findByCargoContainingIgnoreCase(String cargo,Pageable pageable);
 }

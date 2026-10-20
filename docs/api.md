@@ -32,3 +32,23 @@ La contraseña de registro exige 12-72 caracteres, mayúscula, minúscula, núme
 
 Los listados usan `pagina`, `tamano` y `q`, y responden `{contenido,pagina,tamano,totalElementos,totalPaginas}`. No existe endpoint para eliminar proyectos físicamente.
 
+## Cotizaciones
+
+- `GET|POST /proyectos/{id}/cotizaciones`: lista visible o crea un borrador; crear requiere `ADMINISTRADOR` o `ENCARGADO`.
+- `GET|PATCH /cotizaciones/{id}`: consulta o edita únicamente un borrador.
+- `POST /cotizaciones/{id}/enviar`: gestor; fija `emitidaEn` y `venceEn` a 10 días.
+- `POST /cotizaciones/{id}/responder`: cliente propietario; `{aceptar, observacion}`. El rechazo exige observación.
+- `POST /cotizaciones/{id}/renovar`: gestor; solo para una versión enviada y vencida. Marca la anterior `VENCIDA` y crea un nuevo borrador.
+
+Todos los importes usan dos decimales y `HALF_UP`. Las partidas son obligatorias y el total se deriva de subtotal más impuesto.
+
+## Pagos y expediente
+
+- `GET|POST /cotizaciones/{id}/pagos`: lista visible o registra un comprobante; registrar es exclusivo del cliente propietario y usa `multipart/form-data` con `tipo`, `metodo`, `monto`, `numeroOperacion` opcional, `pagadoEn` opcional y `archivo`.
+- `GET /pagos`: pagos pendientes, solo `ADMINISTRADOR`.
+- `POST /pagos/{id}/validar`: solo `ADMINISTRADOR`; acumula adelantos validados.
+- `POST /pagos/{id}/rechazar`: solo `ADMINISTRADOR`; cuerpo `{motivo}` obligatorio.
+- `GET|POST /proyectos/{id}/expediente`: consulta visible o creación manual idempotente por gestor. La ruta normal lo crea automáticamente cuando el adelanto alcanza lo requerido.
+
+El comprobante admite PDF, JPG, JPEG y PNG con extensión y MIME concordantes. Exceder `MAX_UPLOAD_BYTES` responde `400 INVALID_FILE`. La API almacena `secure_url`, `public_id`, MIME, tamaño, categoría y `resource_type`; si la transacción falla, solicita a Cloudinary eliminar el recurso recién cargado.
+

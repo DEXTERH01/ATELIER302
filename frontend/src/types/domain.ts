@@ -99,3 +99,60 @@ export interface Usuario {
   activo: boolean;
   ultimoAcceso: string | null;
 }
+export type EstadoCotizacion = 'BORRADOR' | 'ENVIADA' | 'ACEPTADA' | 'RECHAZADA' | 'VENCIDA' | 'ANULADA';
+export type TipoCotizacion = 'INICIAL' | 'ADICIONAL';
+export interface DetalleCotizacion {
+  id: string | null;
+  concepto: string;
+  descripcion: string | null;
+  cantidad: number;
+  precioUnitario: number;
+  importe: number;
+}
+export interface Cotizacion {
+  id: string;
+  proyectoId: string;
+  numero: string;
+  version: number;
+  tipo: TipoCotizacion;
+  subtotal: number;
+  impuesto: number;
+  total: number;
+  porcentajeAdelanto: number;
+  adelantoRequerido: number;
+  estado: EstadoCotizacion;
+  emitidaEn: string | null;
+  venceEn: string | null;
+  respondidaEn: string | null;
+  observacion: string | null;
+  detalles: DetalleCotizacion[];
+}
+export type EstadoPago = 'PENDIENTE' | 'VALIDADO' | 'RECHAZADO';
+export interface Pago {
+  id: string;
+  cotizacionId: string;
+  tipo: 'ADELANTO' | 'SALDO' | 'ADICIONAL';
+  metodo: 'TRANSFERENCIA' | 'DEPOSITO' | 'TARJETA' | 'EFECTIVO' | 'OTRO';
+  monto: number;
+  moneda: string;
+  numeroOperacion: string | null;
+  comprobanteUrl: string;
+  comprobantePublicId: string;
+  comprobanteTipoMime: string;
+  comprobanteTamanoBytes: number;
+  comprobanteCategoria: string;
+  estado: EstadoPago;
+  motivoRechazo: string | null;
+  validadoPor: string | null;
+  validador: string | null;
+  pagadoEn: string;
+  validadoEn: string | null;
+}
+export interface Expediente {
+  id: string;
+  proyectoId: string;
+  codigo: string;
+  estado: string;
+  creadoEn: string;
+  cerradoEn: string | null;
+}

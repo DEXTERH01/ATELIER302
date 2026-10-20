@@ -16,5 +16,9 @@ La matriz de estados vive en `PoliticaEstadosProyecto`; controladores y clientes
 
 Una transición obtiene un bloqueo pesimista, valida la regla, actualiza `proyectos` y agrega `historial_estados` dentro de la misma transacción. El correlativo anual utiliza `INSERT ... ON CONFLICT ... DO UPDATE RETURNING`, por lo que dos solicitudes concurrentes no reciben el mismo número.
 
+Los estados `COTIZACION_ENVIADA`, `ESPERANDO_PAGO`, `PAGO_EN_REVISION` y `PROYECTO_ACTIVO` no se aceptan desde la transición genérica: pertenecen al flujo comercial. Cotizaciones y pagos bloquean las filas relevantes, conservan versiones anteriores y escriben el historial en la misma transacción. La validación suma únicamente pagos `ADELANTO` en estado `VALIDADO`; al alcanzar el porcentaje requerido crea el expediente mediante una operación idempotente protegida por el bloqueo del proyecto y una restricción única.
+
+La carga Cloudinary ocurre antes de confirmar la transacción. Se registra una sincronización transaccional que elimina el `public_id` usando el `resource_type` real cuando el commit no se completa. La eliminación compensatoria se registra si Cloudinary no responde para permitir conciliación operativa.
+
 La visibilidad se aplica también en servicios: gestores ven todo, clientes solo lo propio y especialistas únicamente proyectos presentes en sus asignaciones. Ningún endpoint permite eliminar físicamente un proyecto.
 

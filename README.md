@@ -22,6 +22,10 @@ cd backend
 
 Swagger: `http://localhost:8080/swagger-ui.html`.
 
+Para probar comprobantes configura una cuenta Cloudinary en la sesión (`CLOUDINARY_CLOUD_NAME`,
+`CLOUDINARY_API_KEY` y `CLOUDINARY_API_SECRET`). `MAX_UPLOAD_MB` limita la petición HTTP y
+`MAX_UPLOAD_BYTES` aplica la validación de negocio; ambos deben representar el mismo límite.
+
 ## Frontend local
 
 ```powershell
@@ -63,6 +67,22 @@ El proxy de Netlify usa el host definido en `frontend/netlify.toml`; debe coinci
 - Solo administradores y encargados ejecutan transiciones. Los especialistas ven proyectos asignados y los clientes solo los propios.
 - Los clientes pueden completar sus datos y requerimientos mientras el proyecto esté en `SOLICITUD_REGISTRADA` o `DATOS_INCOMPLETOS`.
 - El dashboard, los proyectos y los directorios visibles se consultan desde la navegación adaptable del frontend.
+
+## Funcionalidad de Fase 3
+
+- Administradores y encargados crean cotizaciones versionadas con partidas, impuesto y adelanto calculados con `BigDecimal`.
+- Al enviar una cotización se fija una vigencia inmutable de 10 días. El cliente propietario puede aceptarla o rechazarla; una cotización vencida se renueva creando otra versión.
+- El cliente carga comprobantes PDF/JPG/PNG desde la pestaña **Comercial**. Se conservan `secure_url`, `public_id`, MIME, tamaño, categoría y `resource_type` de Cloudinary.
+- Solo el administrador valida o rechaza pagos desde **Pagos**. Alcanzar el adelanto requerido activa el proyecto y crea un único expediente dentro de la misma transacción.
+- La transición genérica no permite saltar los estados comerciales. Un proyecto nunca se activa sin adelanto validado.
+
+### Recorrido manual de aceptación
+
+1. Como encargado, lleva un proyecto con requerimientos completos a `EN_COTIZACION`, crea el borrador y envíalo.
+2. Como cliente propietario, acepta la cotización y registra un adelanto con comprobante válido.
+3. Como administrador, abre **Pagos** y valida el comprobante. Comprueba que el proyecto quede `PROYECTO_ACTIVO` y muestre su expediente.
+4. Repite el envío con un archivo de extensión/MIME incompatible o mayor al límite: la API debe responder `400 INVALID_FILE`.
+5. Fuerza un fallo de base de datos después de una carga en un entorno de prueba y verifica en los logs que la compensación elimine el `public_id` de Cloudinary.
 
 ## Validación
 

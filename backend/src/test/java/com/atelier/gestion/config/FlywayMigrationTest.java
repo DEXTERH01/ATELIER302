@@ -19,14 +19,14 @@ class FlywayMigrationTest {
       .withPassword("atelier_test");
 
   @Test @Order(1)
-  void aplicaLasCuatroMigracionesEnPostgresqlReal() {
+  void aplicaLasCincoMigracionesEnPostgresqlReal() {
     var result = Flyway.configure()
         .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
         .locations("classpath:db/migration")
         .load()
         .migrate();
 
-    assertThat(result.migrationsExecuted).isEqualTo(4);
+    assertThat(result.migrationsExecuted).isEqualTo(5);
   }
 
   @Test @Order(2)

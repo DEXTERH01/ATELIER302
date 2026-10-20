@@ -23,6 +23,9 @@ const EmployeesPage = lazy(() =>
 const UsersPage = lazy(() =>
   import('../features/usuarios/pages/UsersPage').then((m) => ({ default: m.UsersPage })),
 );
+const PaymentsPage = lazy(() =>
+  import('../features/pagos/pages/PaymentsPage').then((m) => ({ default: m.PaymentsPage })),
+);
 function Home() {
   return (
     <main className="min-h-screen p-6 md:p-12">
@@ -62,6 +65,14 @@ export function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/proyectos" element={<ProjectsPage />} />
           <Route path="/proyectos/:id" element={<ProjectDetailPage />} />
+          <Route
+            path="/pagos"
+            element={
+              <ProtectedRoute roles={['ADMINISTRADOR']}>
+                <PaymentsPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/clientes"
             element={
