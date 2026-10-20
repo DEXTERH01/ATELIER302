@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { FormField } from '../../../components/ui/FormField';
+import { AtelierLogo } from '../../../components/brand/AtelierLogo';
 import { useAuth } from '../AuthContext';
 import { loginSchema, type LoginForm } from '../schemas/authSchemas';
 export function LoginPage() {
@@ -63,10 +64,10 @@ export function AuthCard({ title, children }: { title: string; children: React.R
   return (
     <main className="grid min-h-screen place-items-center p-5">
       <section className="w-full max-w-md rounded-xl border border-atelier-stone bg-white p-7 shadow-xl">
-        <Link to="/" className="text-xs font-bold tracking-[.3em] text-atelier-accent">
-          ATELIER
+        <Link to="/" className="block w-64 max-w-full" aria-label="Volver al inicio">
+          <AtelierLogo className="h-auto w-full" />
         </Link>
-        <h1 className="mb-6 mt-3 text-3xl font-semibold">{title}</h1>
+        <h1 className="mb-6 mt-6 text-3xl font-semibold">{title}</h1>
         {children}
       </section>
     </main>

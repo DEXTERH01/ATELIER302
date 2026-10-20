@@ -20,6 +20,9 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+svg {
+  display: block;
+}
 button,
 input,
 select {

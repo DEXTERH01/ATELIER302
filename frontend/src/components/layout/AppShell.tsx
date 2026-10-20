@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../../features/auth/AuthContext';
 import type { Rol } from '../../types/auth';
+import { AtelierLogo } from '../brand/AtelierLogo';
 
 const links: { to: string; label: string; icon: typeof LayoutDashboard; roles?: Rol[] }[] = [
   { to: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
@@ -27,7 +28,7 @@ export function AppShell() {
   return (
     <div className="min-h-screen bg-atelier-paper lg:grid lg:grid-cols-[250px_1fr]">
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-atelier-stone bg-white px-4 py-3 lg:hidden">
-        <span className="font-bold tracking-[.25em] text-atelier-accent">ATELIER</span>
+        <AtelierLogo className="h-auto w-36" />
         <button aria-label="Abrir navegación" className="rounded-md p-2" onClick={() => setAbierto(true)}>
           <Menu />
         </button>
@@ -43,7 +44,7 @@ export function AppShell() {
         className={`fixed inset-y-0 left-0 z-40 flex w-[280px] flex-col border-r border-atelier-stone bg-white p-5 transition-transform lg:sticky lg:top-0 lg:h-screen lg:w-auto lg:translate-x-0 ${abierto ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="flex items-center justify-between">
-          <span className="font-bold tracking-[.28em] text-atelier-accent">ATELIER</span>
+          <AtelierLogo className="h-auto w-48" />
           <button aria-label="Cerrar navegación" className="p-2 lg:hidden" onClick={() => setAbierto(false)}>
             <X />
           </button>

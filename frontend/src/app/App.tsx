@@ -4,6 +4,7 @@ import { ProtectedRoute } from './router/ProtectedRoute';
 import { LoginPage } from '../features/auth/pages/LoginPage';
 import { RegisterPage } from '../features/auth/pages/RegisterPage';
 import { AppShell } from '../components/layout/AppShell';
+import { AtelierLogo } from '../components/brand/AtelierLogo';
 const DashboardPage = lazy(() =>
   import('../features/dashboard/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 );
@@ -26,12 +27,13 @@ function Home() {
   return (
     <main className="min-h-screen p-6 md:p-12">
       <nav className="mx-auto flex max-w-6xl items-center justify-between">
-        <strong className="tracking-[.3em] text-atelier-accent">ATELIER</strong>
+        <AtelierLogo className="h-auto w-48 md:w-60" />
         <Link className="rounded-md border border-atelier-ink px-4 py-2" to="/login">
           Ingresar
         </Link>
       </nav>
-      <section className="mx-auto grid min-h-[75vh] max-w-6xl content-center">
+      <section className="mx-auto grid min-h-[72vh] max-w-6xl content-center">
+        <div className="mb-8 h-px w-20 bg-atelier-accent" />
         <p className="uppercase tracking-[.25em] text-atelier-accent">Arquitectura con trazabilidad</p>
         <h1 className="mt-4 max-w-4xl text-5xl font-semibold leading-tight md:text-7xl">
           Cada proyecto, claro desde la solicitud hasta la entrega.
