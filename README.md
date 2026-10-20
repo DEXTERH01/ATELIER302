@@ -17,7 +17,7 @@ Configura Java 21 solo para la sesión de PowerShell y exporta las variables de 
 $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot'
 $env:Path = "$env:JAVA_HOME\bin;$env:Path"
 cd backend
-.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev
+.\mvnw-java21.ps1 spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 Swagger: `http://localhost:8080/swagger-ui.html`.
@@ -56,11 +56,19 @@ No uses estas credenciales ni la migración demo en producción.
 
 El proxy de Netlify usa el host definido en `frontend/netlify.toml`; debe coincidir con el servicio Render definitivo.
 
+## Funcionalidad de Fase 2
+
+- Los clientes crean proyectos únicamente para su propio perfil. Administradores y encargados pueden seleccionar cliente y encargado.
+- Cada proyecto recibe un código atómico `PROY-AAAA-NNNN` y conserva todo cambio de estado en su historial.
+- Solo administradores y encargados ejecutan transiciones. Los especialistas ven proyectos asignados y los clientes solo los propios.
+- Los clientes pueden completar sus datos y requerimientos mientras el proyecto esté en `SOLICITUD_REGISTRADA` o `DATOS_INCOMPLETOS`.
+- El dashboard, los proyectos y los directorios visibles se consultan desde la navegación adaptable del frontend.
+
 ## Validación
 
 ```powershell
 cd backend
-.\mvnw.cmd verify
+.\mvnw-java21.ps1 verify
 cd ..\frontend
 npm ci
 npm run lint

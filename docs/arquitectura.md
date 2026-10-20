@@ -10,3 +10,11 @@ Los PDF y demás documentos se suben mediante el adaptador Cloudinary con `resou
 
 Las migraciones Flyway son la fuente ejecutable del esquema. `database/` conserva sin cambios los entregables originales.
 
+## Estados y autorización de proyectos
+
+La matriz de estados vive en `PoliticaEstadosProyecto`; controladores y clientes no pueden saltarla. `CERRADO` y `CANCELADO` son terminales, cancelar exige comentario y entrar a cotización exige todos los requerimientos obligatorios completos. Desde `EXPEDIENTE_FINAL`, la ruta depende de `requiereTramitePublico`.
+
+Una transición obtiene un bloqueo pesimista, valida la regla, actualiza `proyectos` y agrega `historial_estados` dentro de la misma transacción. El correlativo anual utiliza `INSERT ... ON CONFLICT ... DO UPDATE RETURNING`, por lo que dos solicitudes concurrentes no reciben el mismo número.
+
+La visibilidad se aplica también en servicios: gestores ven todo, clientes solo lo propio y especialistas únicamente proyectos presentes en sus asignaciones. Ningún endpoint permite eliminar físicamente un proyecto.
+

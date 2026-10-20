@@ -24,4 +24,8 @@ public class AuditoriaService {
     if (StringUtils.isNotBlank(agente)) detalle.put("userAgent", StringUtils.left(agente, 300));
     repository.save(new Auditoria(usuario, "usuarios", String.valueOf(usuario.getId()), "LOGIN", detalle));
   }
+
+  public void registrar(Usuario usuario,String tabla,Object id,String accion,Map<String,Object> detalle){
+    repository.save(new Auditoria(usuario,tabla,id==null?null:String.valueOf(id),accion,detalle==null?Map.of():detalle));
+  }
 }

@@ -1,4 +1,31 @@
-@import "tailwindcss";
-@theme { --color-atelier-ink:#292724; --color-atelier-paper:#f5f1e9; --color-atelier-accent:#8c4f36; --color-atelier-stone:#d8d0c4; }
-:root{font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#292724;background:#f5f1e9;font-synthesis:none;text-rendering:optimizeLegibility}*{box-sizing:border-box}body{margin:0;min-width:320px;min-height:100vh}button,input,select{font:inherit}:focus-visible{outline:3px solid #8c4f36;outline-offset:2px}
-
+@import 'tailwindcss';
+@theme {
+  --color-atelier-ink: #292724;
+  --color-atelier-paper: #f5f1e9;
+  --color-atelier-accent: #8c4f36;
+  --color-atelier-stone: #d8d0c4;
+}
+:root {
+  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  color: #292724;
+  background: #f5f1e9;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+:focus-visible {
+  outline: 3px solid #8c4f36;
+  outline-offset: 2px;
+}

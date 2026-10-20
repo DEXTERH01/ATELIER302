@@ -1,0 +1,44 @@
+import type { EstadoProyecto } from '../../types/domain';
+
+export const estadoEtiquetas: Record<EstadoProyecto, string> = {
+  SOLICITUD_REGISTRADA: 'Solicitud registrada',
+  DATOS_INCOMPLETOS: 'Datos incompletos',
+  EN_COTIZACION: 'En cotización',
+  COTIZACION_ENVIADA: 'Cotización enviada',
+  ESPERANDO_PAGO: 'Esperando pago',
+  PAGO_EN_REVISION: 'Pago en revisión',
+  PROYECTO_ACTIVO: 'Proyecto activo',
+  EN_ESTUDIOS: 'En estudios',
+  EN_DISENO: 'En diseño',
+  REVISION_CLIENTE: 'Revisión del cliente',
+  EXPEDIENTE_FINAL: 'Expediente final',
+  EN_TRAMITE_PUBLICO: 'En trámite público',
+  CON_OBSERVACIONES: 'Con observaciones',
+  APROBADO: 'Aprobado',
+  NO_VIABLE: 'No viable',
+  CERRADO: 'Cerrado',
+  CANCELADO: 'Cancelado',
+};
+const base: Record<EstadoProyecto, EstadoProyecto[]> = {
+  SOLICITUD_REGISTRADA: ['DATOS_INCOMPLETOS', 'EN_COTIZACION', 'CANCELADO'],
+  DATOS_INCOMPLETOS: ['SOLICITUD_REGISTRADA', 'EN_COTIZACION', 'CANCELADO'],
+  EN_COTIZACION: ['COTIZACION_ENVIADA', 'CANCELADO'],
+  COTIZACION_ENVIADA: ['EN_COTIZACION', 'ESPERANDO_PAGO', 'CANCELADO'],
+  ESPERANDO_PAGO: ['PAGO_EN_REVISION', 'EN_COTIZACION', 'CANCELADO'],
+  PAGO_EN_REVISION: ['ESPERANDO_PAGO', 'PROYECTO_ACTIVO', 'CANCELADO'],
+  PROYECTO_ACTIVO: ['EN_ESTUDIOS', 'EN_DISENO', 'CANCELADO'],
+  EN_ESTUDIOS: ['EN_DISENO', 'CANCELADO'],
+  EN_DISENO: ['REVISION_CLIENTE', 'CANCELADO'],
+  REVISION_CLIENTE: ['EN_DISENO', 'EXPEDIENTE_FINAL', 'CANCELADO'],
+  EXPEDIENTE_FINAL: ['EN_TRAMITE_PUBLICO', 'APROBADO', 'CERRADO', 'CANCELADO'],
+  EN_TRAMITE_PUBLICO: ['CON_OBSERVACIONES', 'APROBADO', 'NO_VIABLE', 'CANCELADO'],
+  CON_OBSERVACIONES: ['EN_TRAMITE_PUBLICO', 'NO_VIABLE', 'CANCELADO'],
+  APROBADO: ['CERRADO'],
+  NO_VIABLE: ['CERRADO'],
+  CERRADO: [],
+  CANCELADO: [],
+};
+export function siguientesEstados(estado: EstadoProyecto, requiereTramite: boolean): EstadoProyecto[] {
+  if (estado !== 'EXPEDIENTE_FINAL') return base[estado];
+  return requiereTramite ? ['EN_TRAMITE_PUBLICO', 'CANCELADO'] : ['APROBADO', 'CERRADO', 'CANCELADO'];
+}

@@ -23,5 +23,12 @@ class SecurityAuthorizationTest {
   @Autowired MockMvc mvc; @MockitoBean UsuarioRepository usuarios;
   @Test void clienteNoAccedeAOperacionAdministrativa()throws Exception{mvc.perform(get("/api/v1/test/admin").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENTE")))).andExpect(status().isForbidden());}
   @Test void administradorAccedeAOperacionAdministrativa()throws Exception{mvc.perform(get("/api/v1/test/admin").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR")))).andExpect(status().isOk());}
-  @RestController public static class TestController {@GetMapping("/api/v1/test/admin") @PreAuthorize("hasRole('ADMINISTRADOR')") String admin(){return "ok";}}
+  @Test void clienteNoEjecutaTransicionesDeGestor()throws Exception{mvc.perform(get("/api/v1/test/gestor").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENTE")))).andExpect(status().isForbidden());}
+  @Test void encargadoEjecutaOperacionesDeGestor()throws Exception{mvc.perform(get("/api/v1/test/gestor").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ENCARGADO")))).andExpect(status().isOk());}
+  @Test void anonimoNoAccedeARecursosAutenticados()throws Exception{mvc.perform(get("/api/v1/test/autenticado")).andExpect(status().isUnauthorized());}
+  @RestController public static class TestController {
+    @GetMapping("/api/v1/test/admin") @PreAuthorize("hasRole('ADMINISTRADOR')") String admin(){return "ok";}
+    @GetMapping("/api/v1/test/gestor") @PreAuthorize("hasAnyRole('ADMINISTRADOR','ENCARGADO')") String gestor(){return "ok";}
+    @GetMapping("/api/v1/test/autenticado") String autenticado(){return "ok";}
+  }
 }
