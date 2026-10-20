@@ -1,4 +1,12 @@
 import type { SVGProps } from 'react';
+import {
+  DESCRIPTOR_ADVANCE,
+  DESCRIPTOR_PATH,
+  DESCRIPTOR_UPEM,
+  WORDMARK_ADVANCE,
+  WORDMARK_PATH,
+  WORDMARK_UPEM,
+} from './AtelierLogoPaths';
 
 type AtelierLogoProps = SVGProps<SVGSVGElement> & { title?: string };
 
@@ -16,33 +24,17 @@ export function AtelierLogo({ title = 'Atelier 302 Arquitectos y Asociados', ...
       {...props}
     >
       <title>{title}</title>
-      <text
-        x="154"
-        y="263"
+      <path
+        d={WORDMARK_PATH}
         fill="#050505"
-        fontFamily="Bodoni MT, Didot, Bodoni 72, Times New Roman, serif"
-        fontSize="215"
-        fontWeight="700"
-        letterSpacing="-10"
-        textLength="1290"
-        lengthAdjust="spacingAndGlyphs"
-      >
-        Atelier302
-      </text>
+        transform={`translate(154 263) scale(${1290 / WORDMARK_ADVANCE} ${-290 / WORDMARK_UPEM})`}
+      />
       <rect x="0" y="263" width="1536" height="18" fill="#050505" />
-      <text
-        x="160"
-        y="340"
+      <path
+        d={DESCRIPTOR_PATH}
         fill="#050505"
-        fontFamily="Agency FB, Bahnschrift Condensed, Arial Narrow, sans-serif"
-        fontSize="47"
-        fontWeight="500"
-        letterSpacing="18"
-        textLength="1265"
-        lengthAdjust="spacingAndGlyphs"
-      >
-        ARQUITECTOS Y ASOCIADOS
-      </text>
+        transform={`translate(160 340) scale(${1265 / DESCRIPTOR_ADVANCE} ${-47 / DESCRIPTOR_UPEM})`}
+      />
       <circle cx="649" cy="416" r="37" fill="#d01b16" />
       <path d="M770 379 808 453H733Z" fill="#ffca29" />
       <rect x="856" y="379" width="74" height="74" fill="#80b3c9" />
