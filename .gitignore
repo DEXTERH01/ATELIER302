@@ -2,6 +2,7 @@
 .vscode/
 .DS_Store
 Thumbs.db
+ContratosApi.md
 
 **/.env
 !**/.env.example
