@@ -11,4 +11,6 @@ ContratosApi.md
 **/dist/
 **/coverage/
 *.log
+tmp/
+**/__pycache__/
 

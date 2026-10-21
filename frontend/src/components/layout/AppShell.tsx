@@ -7,6 +7,8 @@ import {
   LogOut,
   Menu,
   ReceiptText,
+  FileBarChart,
+  ClipboardList,
   Users,
   X,
 } from 'lucide-react';
@@ -24,6 +26,8 @@ const links: { to: string; label: string; icon: typeof LayoutDashboard; roles?: 
   { to: '/empleados', label: 'Empleados', icon: BriefcaseBusiness, roles: ['ADMINISTRADOR'] },
   { to: '/especialidades', label: 'Especialidades', icon: Layers3, roles: ['ADMINISTRADOR'] },
   { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['ADMINISTRADOR'] },
+  { to: '/reportes', label: 'Reportes', icon: FileBarChart, roles: ['ADMINISTRADOR', 'ENCARGADO'] },
+  { to: '/auditoria', label: 'Auditoría', icon: ClipboardList, roles: ['ADMINISTRADOR'] },
 ];
 export function AppShell() {
   const { usuario, logout } = useAuth();

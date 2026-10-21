@@ -28,6 +28,9 @@ input,
 select {
   font: inherit;
 }
+textarea {
+  font: inherit;
+}
 :focus-visible {
   outline: 3px solid #8c4f36;
   outline-offset: 2px;

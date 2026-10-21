@@ -180,10 +180,21 @@ export interface Estudio {
 }
 export type CategoriaDocumento = 'EXPEDIENTE' | 'ESTUDIO' | 'PROPUESTA' | 'TRAMITE' | 'RESOLUCION';
 export interface Documento {
-  id: string; expedienteId: string; proyectoId: string; estudioId: string | null; subidoPor: string;
+  id: string; expedienteId: string; proyectoId: string; estudioId: string | null; tramiteId: string | null; subidoPor: string;
   autor: string; nombre: string; tipoDocumento: string; version: number; url: string; publicId: string;
   formato: string; tipoMime: string; tamanoBytes: number; categoria: CategoriaDocumento;
   resourceType: string; visibleCliente: boolean; vigente: boolean; creadoEn: string;
+}
+export type EstadoTramite = 'PREPARACION'|'PRESENTADO'|'EN_REVISION'|'OBSERVADO'|'APROBADO'|'RECHAZADO'|'ARCHIVADO';
+export type EstadoObservacionEntidad = 'PENDIENTE'|'SUBSANADA'|'ACEPTADA'|'NO_SUBSANABLE';
+export interface TramitePublico {
+  id:string;proyectoId:string;responsableId:string|null;responsable:string|null;entidad:string;
+  tipoTramite:string;numeroExpedienteExterno:string|null;estado:EstadoTramite;
+  fechaPresentacion:string|null;fechaRespuesta:string|null;observacionGeneral:string|null;creadoEn:string;
+}
+export interface ObservacionEntidad {
+  id:string;tramiteId:string;numero:number;descripcion:string;fechaNotificacion:string;
+  fechaLimite:string|null;estado:EstadoObservacionEntidad;respuesta:string|null;fechaSubsanacion:string|null;
 }
 export type TipoPropuesta = 'ANTEPROYECTO' | 'PROYECTO_FINAL';
 export type EstadoPropuesta = 'BORRADOR' | 'ENVIADA' | 'OBSERVADA' | 'CONFORME' | 'REEMPLAZADA';
@@ -199,4 +210,14 @@ export interface ObservacionCliente {
   id:string;propuestaId:string;clienteId:string;numeroRonda:number;descripcion:string;
   estado:EstadoObservacionCliente;adicional:boolean;requiereCotizacionAdicional:boolean;
   cotizacionAdicionalId:string|null;creadaEn:string;atendidaEn:string|null;
+}
+export interface EventoAuditoria {
+  id: number;
+  usuario: string;
+  correo: string | null;
+  tablaAfectada: string;
+  idRegistro: string | null;
+  accion: 'INSERT' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT' | 'EXPORT';
+  detalle: Record<string, unknown>;
+  creadoEn: string;
 }

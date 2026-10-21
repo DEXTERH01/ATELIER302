@@ -16,4 +16,6 @@ public class ExpedienteController {
   @GetMapping public Respuesta obtener(@PathVariable UUID proyectoId){return service.obtenerPorProyecto(proyectoId);}
   @PostMapping @PreAuthorize("hasAnyRole('ADMINISTRADOR','ENCARGADO')")
   public ResponseEntity<Respuesta> crear(@PathVariable UUID proyectoId){return ResponseEntity.status(HttpStatus.CREATED).body(service.crearManual(proyectoId));}
+  @PostMapping("/completar") @PreAuthorize("hasAnyRole('ADMINISTRADOR','ENCARGADO')")
+  public Respuesta completar(@PathVariable UUID proyectoId){return service.completar(proyectoId);}
 }

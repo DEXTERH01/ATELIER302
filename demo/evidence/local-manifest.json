@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000001",
+      "local_path": "demo/evidence/pdf/doc-001-levantamiento-topografico.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-001-levantamiento-topografico.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 4463005
+    },
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000002",
+      "local_path": "demo/evidence/pdf/doc-002-mecanica-suelos.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-002-mecanica-suelos.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3807
+    },
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000003",
+      "local_path": "demo/evidence/pdf/doc-003-anteproyecto-galeria-nova-v4.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-003-anteproyecto-galeria-nova-v4.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 4589355
+    },
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000004",
+      "local_path": "demo/evidence/pdf/doc-004-proyecto-final-casa-mirador.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-004-proyecto-final-casa-mirador.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3811845
+    },
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000005",
+      "local_path": "demo/evidence/pdf/doc-005-cargo-ingreso-municipal.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-005-cargo-ingreso-municipal.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3585
+    },
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000006",
+      "local_path": "demo/evidence/pdf/doc-006-notificacion-observaciones.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-006-notificacion-observaciones.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3557
+    },
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000007",
+      "local_path": "demo/evidence/pdf/doc-007-resolucion-licencia.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-007-resolucion-licencia.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3309
+    },
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000008",
+      "local_path": "demo/evidence/pdf/doc-008-acta-cierre-proyecto.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-008-acta-cierre-proyecto.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3432
+    },
+    {
+      "kind": "documento",
+      "record_id": "51000000-0000-0000-0000-000000000009",
+      "local_path": "demo/evidence/pdf/doc-009-informe-no-viabilidad.pdf",
+      "public_id": "atelier/demo/evidencias/documentos/doc-009-informe-no-viabilidad.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3342
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000001",
+      "local_path": "demo/evidence/pdf/pago-001-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-001-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3610
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000002",
+      "local_path": "demo/evidence/pdf/pago-002-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-002-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3613
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000003",
+      "local_path": "demo/evidence/pdf/pago-003-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-003-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3605
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000004",
+      "local_path": "demo/evidence/pdf/pago-004-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-004-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3637
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000005",
+      "local_path": "demo/evidence/pdf/pago-005-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-005-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3596
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000006",
+      "local_path": "demo/evidence/pdf/pago-006-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-006-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3600
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000007",
+      "local_path": "demo/evidence/pdf/pago-007-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-007-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3598
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000008",
+      "local_path": "demo/evidence/pdf/pago-008-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-008-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3592
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000009",
+      "local_path": "demo/evidence/pdf/pago-009-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-009-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3614
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000010",
+      "local_path": "demo/evidence/pdf/pago-010-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-010-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3582
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000011",
+      "local_path": "demo/evidence/pdf/pago-011-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-011-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3604
+    },
+    {
+      "kind": "pago",
+      "record_id": "42000000-0000-0000-0000-000000000012",
+      "local_path": "demo/evidence/pdf/pago-012-comprobante.pdf",
+      "public_id": "atelier/demo/evidencias/comprobantes/pago-012-comprobante.pdf",
+      "mime_type": "application/pdf",
+      "resource_type": "raw",
+      "bytes": 3612
+    },
+    {
+      "kind": "imagen",
+      "record_id": null,
+      "local_path": "demo/evidence/images/casa-mirador-rojas.png",
+      "public_id": "atelier/demo/evidencias/imagenes/casa-mirador-rojas",
+      "mime_type": "image/png",
+      "resource_type": "image",
+      "bytes": 2488672
+    },
+    {
+      "kind": "imagen",
+      "record_id": null,
+      "local_path": "demo/evidence/images/levantamiento-topografico.png",
+      "public_id": "atelier/demo/evidencias/imagenes/levantamiento-topografico",
+      "mime_type": "image/png",
+      "resource_type": "image",
+      "bytes": 3045145
+    },
+    {
+      "kind": "imagen",
+      "record_id": null,
+      "local_path": "demo/evidence/images/galeria-nova-interior.png",
+      "public_id": "atelier/demo/evidencias/imagenes/galeria-nova-interior",
+      "mime_type": "image/png",
+      "resource_type": "image",
+      "bytes": 2544394
+    }
+  ]
+}

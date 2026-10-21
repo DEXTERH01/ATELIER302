@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, CheckCircle2, ClipboardList, FileArchive, FlaskConical, History, Landmark, PenTool, Trash2, UsersRound } from 'lucide-react';
+import { ArrowLeft, Building2, CheckCircle2, ClipboardList, FileArchive, FlaskConical, History, Landmark, PenTool, Trash2, UsersRound } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PageHeader } from '../../../components/layout/PageHeader';
@@ -13,6 +13,7 @@ import { TeamTasksPanel } from '../../asignaciones/components/TeamTasksPanel';
 import { StudiesPanel } from '../../estudios/components/StudiesPanel';
 import { DocumentsPanel } from '../../expedientes/components/DocumentsPanel';
 import { ProposalsPanel } from '../../propuestas';
+import { ProceduresPanel } from '../../tramites';
 
 const campo = 'rounded-lg border border-atelier-stone bg-white px-3 py-2.5';
 const fechaHora = new Intl.DateTimeFormat('es-PE', {
@@ -24,7 +25,7 @@ export function ProjectDetailPage() {
   const { id = '' } = useParams();
   const { usuario } = useAuth();
   const qc = useQueryClient();
-  const [tab, setTab] = useState<'requerimientos' | 'comercial' | 'equipo' | 'estudios' | 'propuestas' | 'documentos' | 'historial'>('requerimientos');
+  const [tab, setTab] = useState<'requerimientos' | 'comercial' | 'equipo' | 'estudios' | 'propuestas' | 'documentos' | 'tramites' | 'historial'>('requerimientos');
   const proyecto = useQuery({ queryKey: ['proyecto', id], queryFn: () => api.obtener(id), enabled: !!id });
   const requisitos = useQuery({
     queryKey: ['proyecto', id, 'requerimientos'],
@@ -147,6 +148,13 @@ export function ProjectDetailPage() {
               Expediente
             </button>
             <button
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'tramites' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
+              onClick={() => setTab('tramites')}
+            >
+              <Building2 size={17} />
+              Trámites
+            </button>
+            <button
               className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'comercial' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
               onClick={() => setTab('comercial')}
             >
@@ -253,6 +261,8 @@ export function ProjectDetailPage() {
             <ProposalsPanel proyecto={p} />
           ) : tab === 'documentos' ? (
             <DocumentsPanel proyecto={p} />
+          ) : tab === 'tramites' ? (
+            <ProceduresPanel proyecto={p} />
           ) : (
             <section className="mt-4 grid gap-3">
               {historial.data?.map((h) => (

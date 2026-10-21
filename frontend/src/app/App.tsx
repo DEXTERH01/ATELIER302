@@ -29,6 +29,12 @@ const PaymentsPage = lazy(() =>
 const SpecialtiesPage = lazy(() =>
   import('../features/especialidades/pages/SpecialtiesPage').then((m) => ({ default: m.SpecialtiesPage })),
 );
+const ReportsPage = lazy(() =>
+  import('../features/reportes/pages/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+);
+const AuditPage = lazy(() =>
+  import('../features/auditoria/pages/AuditPage').then((m) => ({ default: m.AuditPage })),
+);
 function Home() {
   return (
     <main className="min-h-screen p-6 md:p-12">
@@ -105,6 +111,22 @@ export function App() {
             element={
               <ProtectedRoute roles={['ADMINISTRADOR']}>
                 <UsersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/reportes"
+            element={
+              <ProtectedRoute roles={['ADMINISTRADOR', 'ENCARGADO']}>
+                <ReportsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/auditoria"
+            element={
+              <ProtectedRoute roles={['ADMINISTRADOR']}>
+                <AuditPage />
               </ProtectedRoute>
             }
           />

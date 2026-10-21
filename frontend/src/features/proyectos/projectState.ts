@@ -39,6 +39,8 @@ const base: Record<EstadoProyecto, EstadoProyecto[]> = {
   CANCELADO: [],
 };
 export function siguientesEstados(estado: EstadoProyecto, requiereTramite: boolean): EstadoProyecto[] {
+  if (requiereTramite && estado === 'EXPEDIENTE_FINAL') return ['CANCELADO'];
+  if (requiereTramite && ['EN_TRAMITE_PUBLICO', 'CON_OBSERVACIONES'].includes(estado)) return ['CANCELADO'];
   if (estado !== 'EXPEDIENTE_FINAL') return base[estado];
-  return requiereTramite ? ['EN_TRAMITE_PUBLICO', 'CANCELADO'] : ['APROBADO', 'CERRADO', 'CANCELADO'];
+  return ['APROBADO', 'CERRADO', 'CANCELADO'];
 }

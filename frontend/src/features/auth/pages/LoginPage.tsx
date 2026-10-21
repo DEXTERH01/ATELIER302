@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { FormField } from '../../../components/ui/FormField';
@@ -18,8 +19,14 @@ export function LoginPage() {
     try {
       await auth.login(values);
       navigate('/dashboard');
-    } catch {
-      setError('root', { message: 'Correo o contraseña incorrectos' });
+    } catch (error) {
+      const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+      const message = status === 401
+        ? 'Correo o contraseña incorrectos'
+        : status === 403
+          ? 'El servidor rechazó la solicitud. Verifica la configuración de acceso.'
+          : 'No fue posible conectar con el servidor. Intenta nuevamente en unos instantes.';
+      setError('root', { message });
     }
   });
   return (

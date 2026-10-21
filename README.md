@@ -99,6 +99,16 @@ correo real hará falta implementar posteriormente envío y verificación por to
 
 El proxy de Netlify usa el host definido en `frontend/netlify.toml`; debe coincidir con el servicio Render definitivo.
 
+## Variables de producción y CORS
+
+En Render configura `SPRING_PROFILES_ACTIVE=prod`, `REFRESH_COOKIE_SECURE=true` y las credenciales de PostgreSQL, JWT y Cloudinary. Para este despliegue, la variable CORS debe ser exactamente:
+
+```text
+CORS_ALLOWED_ORIGINS=https://atelier-gestion-digital.netlify.app,http://localhost:5173
+```
+
+No uses comillas ni una barra final en el dominio. Si CORS no coincide, el backend puede responder `403 Invalid CORS request`; el formulario ya diferencia ese problema de una contraseña incorrecta. Netlify no necesita `VITE_API_BASE_URL` si se usa el proxy del archivo `frontend/netlify.toml`.
+
 ## Funcionalidad de Fase 2
 
 - Los clientes crean proyectos únicamente para su propio perfil. Administradores y encargados pueden seleccionar cliente y encargado.
@@ -157,6 +167,30 @@ El proxy de Netlify usa el host definido en `frontend/netlify.toml`; debe coinci
 4. Como encargado, marca la tercera ronda adicional y crea su cotización. Como cliente, acéptala y registra un pago `ADICIONAL`; como administrador, valídalo.
 5. Antes del pago validado, intenta atender la observación o crear otra versión: la API debe rechazarlo. Después de validarlo, ambas operaciones deben quedar habilitadas.
 6. Da conformidad a una propuesta `PROYECTO_FINAL` y verifica el estado `EXPEDIENTE_FINAL` y su entrada de historial.
+
+## Funcionalidad de Fase 6
+
+- El gestor completa el expediente final únicamente cuando existe una propuesta final conforme y al menos un documento vigente de expediente.
+- Los trámites se preparan desde `EXPEDIENTE_FINAL`; presentarlos exige expediente `COMPLETO` y número externo. La presentación cambia el proyecto a `EN_TRAMITE_PUBLICO` con historial.
+- Cada observación oficial conserva número correlativo, notificación, plazo opcional, respuesta y fecha de subsanación. El proyecto alterna transaccionalmente entre `CON_OBSERVACIONES` y `EN_TRAMITE_PUBLICO`.
+- La aprobación queda bloqueada mientras existan observaciones pendientes o falte un documento `RESOLUCION` asociado al trámite. Una respuesta negativa produce `NO_VIABLE`.
+- El cierre se realiza desde `APROBADO` o `NO_VIABLE` y cierra también el expediente. El cliente propietario puede consultar trámites, observaciones y documentos autorizados, pero no alterarlos.
+
+### Recorrido manual de aceptación de trámite y cierre
+
+1. En un proyecto `EXPEDIENTE_FINAL`, sube al menos un documento de categoría **Expediente** y pulsa **Marcar completo** en la pestaña **Trámites**.
+2. Prepara un trámite con entidad, responsable, tipo y número externo; preséntalo y comprueba el estado `EN_TRAMITE_PUBLICO`.
+3. Registra una observación de la entidad y verifica `CON_OBSERVACIONES`. Registra su subsanación y comprueba el retorno a `EN_TRAMITE_PUBLICO`.
+4. Intenta aprobar sin resolución: la API debe rechazarlo. Adjunta un PDF/JPG/PNG de categoría **Resolución / licencia** y vuelve a aprobar.
+5. Verifica `APROBADO`, su historial y la visibilidad del documento para el cliente cuando fue autorizado.
+6. Ejecuta la transición a `CERRADO` y confirma que el expediente también quede cerrado. Repite en otro trámite con resultado **No viable** para validar esa rama.
+
+## Funcionalidad de Fase 7 y cierre
+
+- Los gestores descargan tres reportes Excel: proyectos por estado, pagos y carga técnica. Cada libro incluye cabecera corporativa, filtro, primera fila congelada y formato monetario.
+- Los administradores consultan la auditoría de operaciones y exportaciones; los demás roles no reciben acceso a esta información.
+- La navegación es adaptable desde 320 px, los controles poseen foco visible y las tablas amplias se desplazan horizontalmente sin cortar información.
+- El recorrido integral, los roles involucrados y la evidencia esperada están en [docs/validacion-integral.md](docs/validacion-integral.md).
 
 ## Validación
 

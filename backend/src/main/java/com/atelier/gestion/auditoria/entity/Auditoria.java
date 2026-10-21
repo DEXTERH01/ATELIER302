@@ -47,4 +47,12 @@ public class Auditoria {
     this.detalle = detalle;
     this.creadoEn = OffsetDateTime.now(ZoneOffset.UTC);
   }
+
+  public Long getId() { return id; }
+  public Usuario getUsuario() { return usuario; }
+  public String getTablaAfectada() { return tablaAfectada; }
+  public String getIdRegistro() { return idRegistro; }
+  public String getAccion() { return accion; }
+  public Map<String, Object> getDetalle() { return detalle; }
+  public OffsetDateTime getCreadoEn() { return creadoEn; }
 }

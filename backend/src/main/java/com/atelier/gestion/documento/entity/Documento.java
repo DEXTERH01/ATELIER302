@@ -2,6 +2,7 @@ package com.atelier.gestion.documento.entity;
 
 import com.atelier.gestion.estudio.entity.EstudioTecnico;
 import com.atelier.gestion.expediente.entity.Expediente;
+import com.atelier.gestion.tramite.entity.TramitePublico;
 import com.atelier.gestion.usuario.entity.Usuario;
 import jakarta.persistence.*;
 import java.time.*;
@@ -13,6 +14,7 @@ public class Documento {
   @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="id_expediente") private Expediente expediente;
   @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="subido_por") private Usuario subidoPor;
   @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="id_estudio") private EstudioTecnico estudio;
+  @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="id_tramite") private TramitePublico tramite;
   @Column(nullable=false,length=200) private String nombre;
   @Column(name="tipo_documento",nullable=false,length=50) private String tipoDocumento;
   @Column(nullable=false) private short version;
@@ -27,7 +29,7 @@ public class Documento {
   @Column(nullable=false) private boolean vigente;
   @Column(name="creado_en",nullable=false,updatable=false) private OffsetDateTime creadoEn;
   protected Documento(){}
-  public Documento(Expediente expediente,Usuario subidoPor,EstudioTecnico estudio,String nombre,String tipoDocumento,short version,String url,String publicId,String formato,String mime,long tamano,CategoriaDocumento categoria,String resourceType,boolean visibleCliente,OffsetDateTime ahora){this.expediente=expediente;this.subidoPor=subidoPor;this.estudio=estudio;this.nombre=nombre;this.tipoDocumento=tipoDocumento;this.version=version;this.urlCloudinary=url;this.publicIdCloudinary=publicId;this.formato=formato;this.tipoMime=mime;this.tamanoBytes=tamano;this.categoria=categoria;this.resourceType=resourceType;this.visibleCliente=visibleCliente;this.vigente=true;this.creadoEn=ahora;}
+  public Documento(Expediente expediente,Usuario subidoPor,EstudioTecnico estudio,TramitePublico tramite,String nombre,String tipoDocumento,short version,String url,String publicId,String formato,String mime,long tamano,CategoriaDocumento categoria,String resourceType,boolean visibleCliente,OffsetDateTime ahora){this.expediente=expediente;this.subidoPor=subidoPor;this.estudio=estudio;this.tramite=tramite;this.nombre=nombre;this.tipoDocumento=tipoDocumento;this.version=version;this.urlCloudinary=url;this.publicIdCloudinary=publicId;this.formato=formato;this.tipoMime=mime;this.tamanoBytes=tamano;this.categoria=categoria;this.resourceType=resourceType;this.visibleCliente=visibleCliente;this.vigente=true;this.creadoEn=ahora;}
   public void retirar(){vigente=false;}
-  public UUID getId(){return id;} public Expediente getExpediente(){return expediente;} public Usuario getSubidoPor(){return subidoPor;} public EstudioTecnico getEstudio(){return estudio;} public String getNombre(){return nombre;} public String getTipoDocumento(){return tipoDocumento;} public short getVersion(){return version;} public String getUrlCloudinary(){return urlCloudinary;} public String getPublicIdCloudinary(){return publicIdCloudinary;} public String getFormato(){return formato;} public String getTipoMime(){return tipoMime;} public long getTamanoBytes(){return tamanoBytes;} public CategoriaDocumento getCategoria(){return categoria;} public String getResourceType(){return resourceType;} public boolean isVisibleCliente(){return visibleCliente;} public boolean isVigente(){return vigente;} public OffsetDateTime getCreadoEn(){return creadoEn;}
+  public UUID getId(){return id;} public Expediente getExpediente(){return expediente;} public Usuario getSubidoPor(){return subidoPor;} public EstudioTecnico getEstudio(){return estudio;} public TramitePublico getTramite(){return tramite;} public String getNombre(){return nombre;} public String getTipoDocumento(){return tipoDocumento;} public short getVersion(){return version;} public String getUrlCloudinary(){return urlCloudinary;} public String getPublicIdCloudinary(){return publicIdCloudinary;} public String getFormato(){return formato;} public String getTipoMime(){return tipoMime;} public long getTamanoBytes(){return tamanoBytes;} public CategoriaDocumento getCategoria(){return categoria;} public String getResourceType(){return resourceType;} public boolean isVisibleCliente(){return visibleCliente;} public boolean isVigente(){return vigente;} public OffsetDateTime getCreadoEn(){return creadoEn;}
 }

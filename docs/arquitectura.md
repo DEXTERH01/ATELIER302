@@ -38,3 +38,17 @@ El flujo de estado pertenece al servicio de propuestas: enviar produce `EN_DISEN
 
 La visibilidad se aplica también en servicios: gestores ven todo, clientes solo lo propio y especialistas únicamente proyectos presentes en sus asignaciones. Ningún endpoint permite eliminar físicamente un proyecto.
 
+## Agregado de trámite público y cierre
+
+`TramitePublico` concentra la presentación, revisión, observaciones y resolución manual recibida de una entidad externa. El trámite y sus observaciones usan bloqueos pesimistas; la subsanación bloquea primero el trámite para serializar respuestas concurrentes. Los estados públicos del proyecto no se aceptan por la transición genérica cuando `requiereTramitePublico=true`.
+
+Antes de presentar, el expediente debe estar `COMPLETO`. Esa marca exige una propuesta `PROYECTO_FINAL` conforme y un documento vigente de categoría `EXPEDIENTE`. Una observación genera `CON_OBSERVACIONES`; la última subsanación pendiente devuelve el proyecto a `EN_TRAMITE_PUBLICO`. Aprobar exige además una resolución vigente vinculada mediante `documentos.id_tramite`; rechazar produce `NO_VIABLE`. Cada cambio guarda historial y auditoría en la misma transacción.
+
+La transición final del proyecto a `CERRADO` archiva también el expediente digital (`ARCHIVADO`). Los documentos de categorías `TRAMITE` y `RESOLUCION` se versionan por trámite, mantienen los metadatos Cloudinary y solo pueden ser cargados por gestores.
+
+## Observabilidad, reportes y cierre
+
+La auditoría de aplicación registra el actor, recurso, acción y detalle funcional sin almacenar secretos. Solo los administradores pueden consultarla. Los roles de gestión exportan tres reportes XLSX mediante Apache POI: proyectos por estado, pagos y carga técnica. Cada exportación se audita como `EXPORT`.
+
+En producción, `CORS_ALLOWED_ORIGINS` debe contener el origen exacto de Netlify, sin una barra final. La SPA usa el proxy `/api`, por lo que el navegador conserva la cookie de refresh como cookie de primera parte; Supabase y Cloudinary permanecen exclusivamente del lado de Render.
+

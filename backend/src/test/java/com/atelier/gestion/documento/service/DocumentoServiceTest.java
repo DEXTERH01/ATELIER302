@@ -17,6 +17,7 @@ import com.atelier.gestion.expediente.repository.ExpedienteRepository;
 import com.atelier.gestion.proyecto.entity.Proyecto;
 import com.atelier.gestion.proyecto.repository.ProyectoRepository;
 import com.atelier.gestion.proyecto.service.AutorizacionProyectoService;
+import com.atelier.gestion.tramite.repository.TramitePublicoRepository;
 import com.atelier.gestion.usuario.entity.Usuario;
 import java.time.*;
 import java.util.*;
@@ -30,6 +31,7 @@ class DocumentoServiceTest {
   private final DocumentoRepository documentos=mock(DocumentoRepository.class);
   private final ExpedienteRepository expedientes=mock(ExpedienteRepository.class);
   private final EstudioTecnicoRepository estudios=mock(EstudioTecnicoRepository.class);
+  private final TramitePublicoRepository tramites=mock(TramitePublicoRepository.class);
   private final ProyectoRepository proyectos=mock(ProyectoRepository.class);
   private final AutorizacionProyectoService acceso=mock(AutorizacionProyectoService.class);
   private final ArchivoStorage storage=mock(ArchivoStorage.class);
@@ -48,7 +50,7 @@ class DocumentoServiceTest {
     when(proyecto.getId()).thenReturn(proyectoId);when(proyecto.getCodigo()).thenReturn("PROY-2026-0001");
     when(expediente.getId()).thenReturn(expedienteId);when(expediente.getProyecto()).thenReturn(proyecto);
     when(acceso.usuario()).thenReturn(usuario);when(acceso.esGestor(usuario)).thenReturn(true);
-    service=new DocumentoService(documentos,expedientes,estudios,proyectos,acceso,storage,validador,
+    service=new DocumentoService(documentos,expedientes,estudios,tramites,proyectos,acceso,storage,validador,
         propiedades(),auditoria,Clock.fixed(Instant.parse("2026-10-20T17:00:00Z"),ZoneOffset.UTC));
   }
 
@@ -79,14 +81,14 @@ class DocumentoServiceTest {
     ArchivoAlmacenado remoto=new ArchivoAlmacenado("https://cloudinary/informe.pdf",
         "atelier/test/informe","raw","application/pdf",128);
     when(storage.subir(any(),anyString())).thenReturn(remoto);
-    when(documentos.maxVersion(expedienteId,"INFORME",CategoriaDocumento.EXPEDIENTE,null)).thenReturn((short)0);
-    when(documentos.vigentesDeSerie(expedienteId,"INFORME",CategoriaDocumento.EXPEDIENTE,null)).thenReturn(List.of());
+    when(documentos.maxVersion(expedienteId,"INFORME",CategoriaDocumento.EXPEDIENTE,null,null)).thenReturn((short)0);
+    when(documentos.vigentesDeSerie(expedienteId,"INFORME",CategoriaDocumento.EXPEDIENTE,null,null)).thenReturn(List.of());
     when(documentos.save(any())).thenAnswer(invocation->{
       Documento guardado=invocation.getArgument(0);ReflectionTestUtils.setField(guardado,"id",UUID.randomUUID());return guardado;
     });
     TransactionSynchronizationManager.initSynchronization();
     try{
-      service.subir(expedienteId,"INFORME",CategoriaDocumento.EXPEDIENTE,null,false,
+      service.subir(expedienteId,"INFORME",CategoriaDocumento.EXPEDIENTE,null,null,false,
           new MockMultipartFile("archivo","informe.pdf","application/pdf",new byte[]{1,2}));
       TransactionSynchronizationManager.getSynchronizations().forEach(s->
           s.afterCompletion(TransactionSynchronization.STATUS_ROLLED_BACK));
@@ -95,7 +97,7 @@ class DocumentoServiceTest {
   }
 
   private Documento documento(UUID id){
-    Documento d=new Documento(expediente,usuario,null,"informe.pdf","INFORME",(short)1,
+    Documento d=new Documento(expediente,usuario,null,null,"informe.pdf","INFORME",(short)1,
         "https://cloudinary/informe.pdf","atelier/test/informe","pdf","application/pdf",128,
         CategoriaDocumento.EXPEDIENTE,"raw",false,OffsetDateTime.now(ZoneOffset.UTC));
     ReflectionTestUtils.setField(d,"id",id);return d;

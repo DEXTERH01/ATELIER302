@@ -11,6 +11,7 @@ import com.atelier.gestion.cliente.repository.ClienteRepository;
 import com.atelier.gestion.cliente.service.ClienteService;
 import com.atelier.gestion.empleado.service.EmpleadoService;
 import com.atelier.gestion.estudio.repository.EstudioTecnicoRepository;
+import com.atelier.gestion.expediente.repository.ExpedienteRepository;
 import com.atelier.gestion.proyecto.dto.ProyectoDtos.Crear;
 import com.atelier.gestion.proyecto.dto.ProyectoDtos.Transicion;
 import com.atelier.gestion.common.exception.ReglaNegocioException;
@@ -35,12 +36,13 @@ class ProyectoServiceTest {
   @Mock SesionActual sesion;
   @Mock AuditoriaService auditoria;
   @Mock EstudioTecnicoRepository estudios;
+  @Mock ExpedienteRepository expedientes;
   ProyectoService service;
 
   @BeforeEach void setUp() {
     MockitoAnnotations.openMocks(this);
     service = new ProyectoService(proyectos, requerimientos, historial, clientes, clienteService,
-        empleadoService, correlativos, politica, sesion, auditoria, estudios);
+        empleadoService, correlativos, politica, sesion, auditoria, estudios, expedientes);
   }
 
   @Test void clienteCreaProyectoSoloParaSuPropioPerfilEIgnoraEncargadoSolicitado() {
@@ -74,6 +76,16 @@ class ProyectoServiceTest {
     assertThatThrownBy(()->service.transicionar(id,new Transicion(EstadoProyecto.PROYECTO_ACTIVO,null)))
         .isInstanceOf(ReglaNegocioException.class).hasMessageContaining("flujo de negocio");
     verifyNoInteractions(politica);
+  }
+
+  @Test void noPermiteAprobarTramitePublicoPorTransicionManual() {
+    UUID id=UUID.randomUUID();Rol rol=mock(Rol.class);Usuario usuario=mock(Usuario.class);Proyecto proyecto=mock(Proyecto.class);
+    when(rol.getNombre()).thenReturn("ENCARGADO");when(usuario.getRol()).thenReturn(rol);
+    when(sesion.usuario()).thenReturn(usuario);when(proyectos.bloquear(id)).thenReturn(java.util.Optional.of(proyecto));
+    when(proyecto.isRequiereTramitePublico()).thenReturn(true);when(proyecto.getEstado()).thenReturn(EstadoProyecto.EN_TRAMITE_PUBLICO);
+    assertThatThrownBy(()->service.transicionar(id,new Transicion(EstadoProyecto.APROBADO,null)))
+        .isInstanceOf(ReglaNegocioException.class).hasMessageContaining("trámite público");
+    verify(proyecto,never()).cambiarEstado(any());
   }
 
   @Test void noPermiteIniciarDisenoMientrasExistanEstudiosRequeridosPendientes() {

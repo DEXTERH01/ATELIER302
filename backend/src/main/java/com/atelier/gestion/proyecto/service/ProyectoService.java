@@ -13,6 +13,8 @@ import com.atelier.gestion.empleado.entity.Empleado;
 import com.atelier.gestion.empleado.service.EmpleadoService;
 import com.atelier.gestion.estudio.entity.EstadoEstudio;
 import com.atelier.gestion.estudio.repository.EstudioTecnicoRepository;
+import com.atelier.gestion.expediente.entity.Expediente;
+import com.atelier.gestion.expediente.repository.ExpedienteRepository;
 import com.atelier.gestion.proyecto.entity.*;
 import com.atelier.gestion.proyecto.repository.*;
 import com.atelier.gestion.security.SesionActual;
@@ -45,12 +47,13 @@ public class ProyectoService {
   private final SesionActual sesion;
   private final AuditoriaService auditoria;
   private final EstudioTecnicoRepository estudios;
+  private final ExpedienteRepository expedientes;
 
   public ProyectoService(ProyectoRepository proyectos, RequerimientoRepository requerimientos,
       HistorialEstadoRepository historial, ClienteRepository clientes, ClienteService clienteService,
       EmpleadoService empleadoService, CorrelativoProyectoService correlativos,
       PoliticaEstadosProyecto politica, SesionActual sesion, AuditoriaService auditoria,
-      EstudioTecnicoRepository estudios) {
+      EstudioTecnicoRepository estudios, ExpedienteRepository expedientes) {
     this.proyectos = proyectos;
     this.requerimientos = requerimientos;
     this.historial = historial;
@@ -62,6 +65,7 @@ public class ProyectoService {
     this.sesion = sesion;
     this.auditoria = auditoria;
     this.estudios = estudios;
+    this.expedientes = expedientes;
   }
 
   @Transactional(readOnly = true)
@@ -155,6 +159,19 @@ public class ProyectoService {
           "Este estado solo puede alcanzarse mediante su flujo de negocio específico");
     }
     EstadoProyecto anterior = proyecto.getEstado();
+    if (proyecto.isRequiereTramitePublico()
+        && Set.of(EstadoProyecto.EN_TRAMITE_PUBLICO, EstadoProyecto.CON_OBSERVACIONES,
+            EstadoProyecto.APROBADO, EstadoProyecto.NO_VIABLE).contains(req.estado())) {
+      throw new ReglaNegocioException(
+          "Este estado debe alcanzarse mediante el flujo de trámite público");
+    }
+    if (anterior == EstadoProyecto.EXPEDIENTE_FINAL
+        && Set.of(EstadoProyecto.APROBADO, EstadoProyecto.CERRADO).contains(req.estado())) {
+      Expediente expediente = expedientes.findByProyectoId(id)
+          .orElseThrow(() -> new ReglaNegocioException("El proyecto no tiene expediente digital"));
+      if (!"COMPLETO".equals(expediente.getEstado()))
+        throw new ReglaNegocioException("El expediente final debe estar completo antes de la entrega");
+    }
     if (anterior == EstadoProyecto.EN_ESTUDIOS && req.estado() == EstadoProyecto.EN_DISENO
         && estudios.countByProyectoIdAndRequeridoTrueAndEstadoNot(id, EstadoEstudio.COMPLETADO) > 0) {
       throw new ReglaNegocioException("Todos los estudios requeridos deben estar validados");
@@ -164,6 +181,13 @@ public class ProyectoService {
     politica.validar(anterior, req.estado(), proyecto.isRequiereTramitePublico(), obligatorios,
         pendientes, req.comentario());
     proyecto.cambiarEstado(req.estado());
+    if (req.estado() == EstadoProyecto.CERRADO) {
+      Expediente expediente = expedientes.findByProyectoId(id)
+          .orElseThrow(() -> new ReglaNegocioException("El proyecto no tiene expediente digital"));
+      expediente.cerrar(java.time.OffsetDateTime.now(java.time.ZoneOffset.UTC));
+      auditoria.registrar(actual, "expedientes", expediente.getId(), "UPDATE",
+          Map.of("estado", "ARCHIVADO"));
+    }
     historial.save(new HistorialEstado(proyecto, actual, anterior, req.estado(),
         StringUtils.trimToNull(req.comentario())));
     auditoria.registrar(actual, "proyectos", id, "UPDATE",

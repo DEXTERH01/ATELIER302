@@ -49,6 +49,7 @@ Todos los importes usan dos decimales y `HALF_UP`. Las partidas son obligatorias
 - `POST /pagos/{id}/validar`: solo `ADMINISTRADOR`; acumula adelantos validados.
 - `POST /pagos/{id}/rechazar`: solo `ADMINISTRADOR`; cuerpo `{motivo}` obligatorio.
 - `GET|POST /proyectos/{id}/expediente`: consulta visible o creación manual idempotente por gestor. La ruta normal lo crea automáticamente cuando el adelanto alcanza lo requerido.
+- `POST /proyectos/{id}/expediente/completar`: gestor; exige propuesta `PROYECTO_FINAL` conforme y al menos un documento vigente de categoría `EXPEDIENTE`.
 
 El comprobante admite PDF, JPG, JPEG y PNG con extensión y MIME concordantes. Exceder `MAX_UPLOAD_BYTES` responde `400 INVALID_FILE`. La API almacena `secure_url`, `public_id`, MIME, tamaño, categoría y `resource_type`; si la transacción falla, solicita a Cloudinary eliminar el recurso recién cargado.
 
@@ -64,10 +65,10 @@ Las asignaciones y tareas usan transiciones centrales y estados terminales. Una 
 
 ## Documentos del expediente
 
-- `GET|POST /expedientes/{id}/documentos`: lista o carga `multipart/form-data` con `tipoDocumento`, `categoria`, `estudioId` opcional, `visibleCliente` y `archivo`.
+- `GET|POST /expedientes/{id}/documentos`: lista o carga `multipart/form-data` con `tipoDocumento`, `categoria`, `estudioId` o `tramiteId` opcional según la categoría, `visibleCliente` y `archivo`.
 - `GET|DELETE /documentos/{id}`: obtiene o retira el documento.
 
-Las categorías habilitadas en esta fase son `EXPEDIENTE` y `ESTUDIO`. El especialista solo adjunta documentos al proyecto asignado y, para un estudio, debe ser su responsable; únicamente un gestor puede autorizar visibilidad al cliente. El cliente propietario recibe solo documentos vigentes y autorizados.
+Las categorías operativas son `EXPEDIENTE`, `ESTUDIO`, `TRAMITE` y `RESOLUCION`. `TRAMITE` y `RESOLUCION` exigen `tramiteId` y rol gestor; `ESTUDIO` exige `estudioId`. El especialista solo adjunta documentos al proyecto asignado y, para un estudio, debe ser su responsable; únicamente un gestor puede autorizar visibilidad al cliente. El cliente propietario recibe solo documentos vigentes y autorizados.
 
 Se admiten PDF, JPG/JPEG y PNG con extensión y MIME concordantes. La carpeta es `atelier/{ambiente}/proyectos/{codigo}/expediente` o `.../estudios`. Cada nueva versión retira lógicamente la anterior de la misma serie y estudio opcional. Si la transacción revierte se elimina el recurso recién subido; una eliminación explícita solo marca el registro no vigente después de que Cloudinary confirme la operación.
 
@@ -84,4 +85,21 @@ Se admiten PDF, JPG/JPEG y PNG con extensión y MIME concordantes. La carpeta es
 Cada `tipo` (`ANTEPROYECTO` o `PROYECTO_FINAL`) conserva una secuencia de versiones y rondas independiente. Las rondas 1 y 2 no pueden marcarse adicionales. La ronda 3 y siguientes pueden vincular una cotización `ADICIONAL` pasando `observacionClienteId` al endpoint de creación de cotizaciones. Un pago para esta cotización debe usar `tipo=ADICIONAL`; su validación no reinicia el estado técnico ni crea otro expediente.
 
 La vista previa admite PDF, JPG/JPEG y PNG y persiste `secure_url`, `public_id`, nombre, MIME, tamaño y `resource_type`. Si PostgreSQL revierte, se ejecuta la compensación Cloudinary. Una propuesta observada pasa a `REEMPLAZADA` cuando se envía su nueva versión.
+
+## Trámites públicos y cierre
+
+- `GET|POST /proyectos/{id}/tramites`: consulta visible o preparación por gestor.
+- `GET|PATCH /tramites/{id}`: consulta o actualización; `PREPARACION → PRESENTADO` exige expediente `COMPLETO` y número externo, y cambia el proyecto a `EN_TRAMITE_PUBLICO`.
+- `GET|POST /tramites/{id}/observaciones`: consulta o registro manual de una observación de entidad. El proyecto pasa a `CON_OBSERVACIONES`.
+- `POST /observaciones-entidad/{id}/subsanar`: registra respuesta y fecha. Al atender la última pendiente, el trámite vuelve a revisión y el proyecto a `EN_TRAMITE_PUBLICO`.
+- `POST /tramites/{id}/resolver`: cuerpo `{aprobado, fechaRespuesta, observacionGeneral}`. Aprobar exige cero observaciones pendientes y una resolución vigente asociada; el resultado produce `APROBADO` o `NO_VIABLE`.
+
+Las operaciones de trámite son exclusivas de `ADMINISTRADOR` y `ENCARGADO`; clientes y especialistas solo consultan proyectos dentro de su alcance. Los cambios del trámite, proyecto, historial y auditoría comparten una transacción. Para cerrar, el gestor utiliza la transición del proyecto desde `APROBADO` o `NO_VIABLE`; el expediente queda `ARCHIVADO` en la misma transacción.
+
+## Reportes y auditoría
+
+- `GET /reportes/proyectos.xlsx`, `GET /reportes/pagos.xlsx` y `GET /reportes/carga-tecnica.xlsx`: descargan libros XLSX con cabecera, filtro y formato monetario. Solo `ADMINISTRADOR` y `ENCARGADO`. Cada descarga genera un evento `EXPORT` de auditoría.
+- `GET /auditoria?pagina=0&tamano=30`: eventos ordenados del más reciente al más antiguo. Solo `ADMINISTRADOR`.
+
+La auditoría registra inicios de sesión y mutaciones de negocio. No expone hashes de contraseña, access tokens ni refresh tokens.
 

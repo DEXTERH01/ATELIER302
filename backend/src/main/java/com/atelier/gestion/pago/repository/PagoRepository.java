@@ -17,4 +17,6 @@ public interface PagoRepository extends JpaRepository<Pago,UUID> {
   boolean existsByCotizacionProyectoIdAndEstado(UUID proyectoId,EstadoPago estado);
   @EntityGraph(attributePaths={"cotizacion","cotizacion.proyecto","cotizacion.proyecto.cliente","cotizacion.proyecto.cliente.usuario","validadoPor","validadoPor.usuario"})
   List<Pago> findByEstadoOrderByPagadoEnAsc(EstadoPago estado);
+  @EntityGraph(attributePaths={"cotizacion","cotizacion.proyecto","cotizacion.proyecto.cliente","cotizacion.proyecto.cliente.usuario","validadoPor","validadoPor.usuario"})
+  List<Pago> findAllByOrderByPagadoEnDesc();
 }

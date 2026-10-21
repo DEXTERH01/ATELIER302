@@ -6,7 +6,7 @@ describe('siguientesEstados', () => {
     expect(siguientesEstados('CANCELADO', true)).toEqual([]);
   });
   it('bifurca el expediente según trámite', () => {
-    expect(siguientesEstados('EXPEDIENTE_FINAL', true)).toContain('EN_TRAMITE_PUBLICO');
+    expect(siguientesEstados('EXPEDIENTE_FINAL', true)).toEqual(['CANCELADO']);
     expect(siguientesEstados('EXPEDIENTE_FINAL', false)).not.toContain('EN_TRAMITE_PUBLICO');
   });
   it('reserva revisión y expediente final al flujo de propuestas', () => {

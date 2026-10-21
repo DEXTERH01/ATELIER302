@@ -1,6 +1,12 @@
 package com.atelier.gestion.auditoria.repository;
 
 import com.atelier.gestion.auditoria.entity.Auditoria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AuditoriaRepository extends JpaRepository<Auditoria, Long> {}
+public interface AuditoriaRepository extends JpaRepository<Auditoria, Long> {
+  @EntityGraph(attributePaths = {"usuario"})
+  Page<Auditoria> findAllByOrderByCreadoEnDesc(Pageable pageable);
+}
