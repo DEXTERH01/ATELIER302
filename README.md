@@ -50,6 +50,45 @@ Se cargan únicamente con el perfil `dev`. Contraseña común: `AtelierDemo2026!
 
 No uses estas credenciales ni la migración demo en producción.
 
+## Base académica completa en Supabase
+
+El archivo `database/02_datos_demo_supabase.sql` carga una demostración integral sobre una
+base que ya tenga aplicadas las migraciones Flyway V1 a V9. Todos sus datos personales,
+documentos y operaciones son sintéticos. La contraseña común es `AtelierDemo2026!`.
+
+| Rol | Correo principal |
+|---|---|
+| ADMINISTRADOR | `admin@atelier.demo` |
+| ENCARGADO | `diego.ramirez@atelier.demo` |
+| ENCARGADO | `valeria.castro@atelier.demo` |
+| ESPECIALISTA | `lucia.torres@atelier.demo` |
+| CLIENTE | `elena.rojas@atelier.demo` |
+
+La semilla incluye más especialistas y clientes, 17 proyectos distribuidos por todos los
+estados, y sus relaciones comerciales, técnicas, documentales y de trámite. Se ejecuta una
+sola vez desde **Supabase > SQL Editor** después de confirmar que Render arrancó con V9.
+
+### Vaciar y reconstruir la base académica
+
+Esta operación destruye todos los datos del esquema `public`. Antes de ejecutarla confirma
+el nombre del proyecto Supabase y que no contiene información que debas conservar.
+
+```sql
+drop schema public cascade;
+create schema public;
+grant all on schema public to postgres;
+grant all on schema public to service_role;
+grant usage on schema public to anon, authenticated;
+```
+
+Después ejecuta **Manual Deploy > Deploy latest commit** en Render. Flyway recreará V1 a
+V9. Cuando `/actuator/health` responda `UP`, ejecuta
+`database/02_datos_demo_supabase.sql` completo en SQL Editor.
+
+Los correos `@atelier.demo` son identificadores de acceso y no buzones. Java no bloquea
+direcciones Gmail: actualmente solo se valida su formato. Para confirmar propiedad de un
+correo real hará falta implementar posteriormente envío y verificación por token.
+
 ## Verificar la sesión
 
 1. Inicia sesión y comprueba en DevTools que `ATELIER_REFRESH` es `HttpOnly` y que no hay tokens en `localStorage`.

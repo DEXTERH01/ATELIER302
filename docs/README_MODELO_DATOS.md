@@ -104,10 +104,14 @@ erDiagram
 
 ## Orden de ejecución en Supabase
 
-1. Abrir SQL Editor.
-2. Ejecutar `01_supabase_postgresql.sql`.
-3. Ejecutar `02_datos_demo_supabase.sql` si se requieren datos de demostración.
-4. Conectar el backend Java usando `SUPABASE_DB_URL`, `SUPABASE_DB_USER` y `SUPABASE_DB_PASSWORD` como variables de entorno.
+1. Conectar Render a una base Supabase vacía mediante `DATABASE_URL`,
+   `DATABASE_USERNAME` y `DATABASE_PASSWORD`.
+2. Dejar que Flyway aplique las migraciones ejecutables V1 a V9. El archivo
+   `01_supabase_postgresql.sql` se conserva como snapshot académico y no debe ejecutarse
+   adicionalmente sobre una base administrada por Flyway.
+3. Abrir SQL Editor y ejecutar `02_datos_demo_supabase.sql` únicamente si se requieren
+   datos integrales para la presentación académica.
+4. Verificar el inicio de sesión con las credenciales documentadas en el README principal.
 
 ## Elementos simulados
 
