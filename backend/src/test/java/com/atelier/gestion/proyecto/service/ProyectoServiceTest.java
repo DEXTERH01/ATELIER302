@@ -72,7 +72,7 @@ class ProyectoServiceTest {
     when(rol.getNombre()).thenReturn("ENCARGADO");when(usuario.getRol()).thenReturn(rol);
     when(sesion.usuario()).thenReturn(usuario);when(proyectos.bloquear(id)).thenReturn(java.util.Optional.of(mock(Proyecto.class)));
     assertThatThrownBy(()->service.transicionar(id,new Transicion(EstadoProyecto.PROYECTO_ACTIVO,null)))
-        .isInstanceOf(ReglaNegocioException.class).hasMessageContaining("cotización");
+        .isInstanceOf(ReglaNegocioException.class).hasMessageContaining("flujo de negocio");
     verifyNoInteractions(politica);
   }
 

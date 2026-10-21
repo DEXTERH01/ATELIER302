@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, CheckCircle2, ClipboardList, FileArchive, FlaskConical, History, Landmark, Trash2, UsersRound } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ClipboardList, FileArchive, FlaskConical, History, Landmark, PenTool, Trash2, UsersRound } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PageHeader } from '../../../components/layout/PageHeader';
@@ -12,6 +12,7 @@ import { ProjectCommercialPanel } from '../../cotizaciones/components/ProjectCom
 import { TeamTasksPanel } from '../../asignaciones/components/TeamTasksPanel';
 import { StudiesPanel } from '../../estudios/components/StudiesPanel';
 import { DocumentsPanel } from '../../expedientes/components/DocumentsPanel';
+import { ProposalsPanel } from '../../propuestas';
 
 const campo = 'rounded-lg border border-atelier-stone bg-white px-3 py-2.5';
 const fechaHora = new Intl.DateTimeFormat('es-PE', {
@@ -23,7 +24,7 @@ export function ProjectDetailPage() {
   const { id = '' } = useParams();
   const { usuario } = useAuth();
   const qc = useQueryClient();
-  const [tab, setTab] = useState<'requerimientos' | 'comercial' | 'equipo' | 'estudios' | 'documentos' | 'historial'>('requerimientos');
+  const [tab, setTab] = useState<'requerimientos' | 'comercial' | 'equipo' | 'estudios' | 'propuestas' | 'documentos' | 'historial'>('requerimientos');
   const proyecto = useQuery({ queryKey: ['proyecto', id], queryFn: () => api.obtener(id), enabled: !!id });
   const requisitos = useQuery({
     queryKey: ['proyecto', id, 'requerimientos'],
@@ -130,6 +131,13 @@ export function ProjectDetailPage() {
             >
               <FlaskConical size={17} />
               Estudios
+            </button>
+            <button
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'propuestas' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
+              onClick={() => setTab('propuestas')}
+            >
+              <PenTool size={17} />
+              Propuestas
             </button>
             <button
               className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'documentos' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
@@ -241,6 +249,8 @@ export function ProjectDetailPage() {
             <TeamTasksPanel proyecto={p} />
           ) : tab === 'estudios' ? (
             <StudiesPanel proyecto={p} />
+          ) : tab === 'propuestas' ? (
+            <ProposalsPanel proyecto={p} />
           ) : tab === 'documentos' ? (
             <DocumentsPanel proyecto={p} />
           ) : (

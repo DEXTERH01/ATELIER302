@@ -101,6 +101,24 @@ El proxy de Netlify usa el host definido en `frontend/netlify.toml`; debe coinci
 5. Autoriza como gestor un documento del expediente y confirma que el cliente propietario pueda abrirlo. Los archivos no autorizados no deben aparecer para el cliente.
 6. Simula una respuesta fallida de eliminación de Cloudinary: la API debe devolver `422` y el documento debe permanecer vigente.
 
+## Funcionalidad de Fase 5
+
+- Gestores y especialistas asignados crean versiones de anteproyecto o proyecto final con vista previa PDF/JPG/PNG almacenada en `atelier/{ambiente}/proyectos/{codigo}/propuestas`.
+- Solo un gestor envía el borrador. El envío cambia el proyecto de `EN_DISENO` a `REVISION_CLIENTE`; el cliente propietario puede dar conformidad o registrar observaciones.
+- Las rondas 1 y 2 están incluidas. Desde la ronda 3 el gestor puede mantenerla incluida o marcarla como adicional y crear una cotización `ADICIONAL` vinculada.
+- Una ronda marcada adicional no puede considerarse atendida ni originar la siguiente versión hasta que su cotización esté aceptada y alcance el pago adicional validado requerido.
+- La conformidad de un anteproyecto devuelve el proyecto a diseño para preparar la versión final. La conformidad del proyecto final genera `EXPEDIENTE_FINAL` con historial transaccional.
+- `REVISION_CLIENTE` y `EXPEDIENTE_FINAL` no pueden alcanzarse mediante el endpoint genérico de transiciones.
+
+### Recorrido manual de aceptación de propuestas
+
+1. En un proyecto `EN_DISENO`, crea y envía una propuesta. Comprueba que el cliente no vea borradores y que el proyecto pase a `REVISION_CLIENTE` al enviarla.
+2. Como cliente propietario, registra una observación. Comprueba que sea ronda 1 incluida y que el proyecto vuelva a `EN_DISENO`.
+3. Repite con nuevas versiones hasta la ronda 3. Las dos primeras deben indicar **Incluida**; la tercera debe indicar **Evaluar adicional**.
+4. Como encargado, marca la tercera ronda adicional y crea su cotización. Como cliente, acéptala y registra un pago `ADICIONAL`; como administrador, valídalo.
+5. Antes del pago validado, intenta atender la observación o crear otra versión: la API debe rechazarlo. Después de validarlo, ambas operaciones deben quedar habilitadas.
+6. Da conformidad a una propuesta `PROYECTO_FINAL` y verifica el estado `EXPEDIENTE_FINAL` y su entrada de historial.
+
 ## Validación
 
 ```powershell

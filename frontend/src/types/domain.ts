@@ -185,3 +185,18 @@ export interface Documento {
   formato: string; tipoMime: string; tamanoBytes: number; categoria: CategoriaDocumento;
   resourceType: string; visibleCliente: boolean; vigente: boolean; creadoEn: string;
 }
+export type TipoPropuesta = 'ANTEPROYECTO' | 'PROYECTO_FINAL';
+export type EstadoPropuesta = 'BORRADOR' | 'ENVIADA' | 'OBSERVADA' | 'CONFORME' | 'REEMPLAZADA';
+export type EstadoObservacionCliente = 'PENDIENTE' | 'ATENDIDA' | 'RECHAZADA';
+export interface Propuesta {
+  id:string;proyectoId:string;creadaPorId:string;creador:string;numeroVersion:number;
+  tipo:TipoPropuesta;descripcion:string|null;vistaPreviaUrl:string;vistaPreviaPublicId:string;
+  vistaPreviaNombre:string;vistaPreviaTipoMime:string;vistaPreviaTamanoBytes:number;
+  vistaPreviaResourceType:string;estado:EstadoPropuesta;enviadaEn:string|null;
+  respondidaEn:string|null;creadoEn:string;
+}
+export interface ObservacionCliente {
+  id:string;propuestaId:string;clienteId:string;numeroRonda:number;descripcion:string;
+  estado:EstadoObservacionCliente;adicional:boolean;requiereCotizacionAdicional:boolean;
+  cotizacionAdicionalId:string|null;creadaEn:string;atendidaEn:string|null;
+}

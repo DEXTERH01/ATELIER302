@@ -6,6 +6,7 @@ export interface CotizacionInput {
   porcentajeImpuesto: number;
   porcentajeAdelanto: number;
   observacion?: string;
+  observacionClienteId?: string;
   detalles: { concepto: string; descripcion?: string; cantidad: number; precioUnitario: number }[];
 }
 export const listar = (proyectoId: string) =>

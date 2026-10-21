@@ -15,7 +15,8 @@ public final class CotizacionDtos {
   public record Guardar(@NotNull TipoCotizacion tipo,
       @NotNull @DecimalMin("0.00") @DecimalMax("100.00") @Digits(integer=3,fraction=2) BigDecimal porcentajeImpuesto,
       @NotNull @DecimalMin("0.00") @DecimalMax("100.00") @Digits(integer=3,fraction=2) BigDecimal porcentajeAdelanto,
-      @Size(max=2000) String observacion,@NotEmpty @Size(max=100) List<@Valid DetalleEntrada> detalles) {}
+      @Size(max=2000) String observacion,UUID observacionClienteId,
+      @NotEmpty @Size(max=100) List<@Valid DetalleEntrada> detalles) {}
   public record Responder(boolean aceptar,@Size(max=2000) String observacion) {}
   public record DetalleRespuesta(UUID id,String concepto,String descripcion,BigDecimal cantidad,BigDecimal precioUnitario,BigDecimal importe) {}
   public record Respuesta(UUID id,UUID proyectoId,String numero,short version,TipoCotizacion tipo,BigDecimal subtotal,

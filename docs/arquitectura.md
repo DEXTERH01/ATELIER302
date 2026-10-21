@@ -28,5 +28,13 @@ Crear un estudio obligatorio desde `PROYECTO_ACTIVO` produce `EN_ESTUDIOS` e his
 
 Los documentos se versionan por expediente, tipo, categoría y estudio opcional. El registro anterior permanece para trazabilidad pero deja de estar vigente. Las relaciones se conservan y ningún flujo de esta fase elimina físicamente proyectos, asignaciones, tareas, estudios o documentos.
 
+## Agregado de propuestas y revisiones
+
+Las propuestas son versiones inmutables por proyecto y tipo. El bloqueo pesimista del proyecto serializa la asignación de versión, el envío, la respuesta y el número de ronda. Las vistas previas se almacenan mediante el mismo puerto Cloudinary y la misma compensación transaccional utilizada por documentos y pagos.
+
+El flujo de estado pertenece al servicio de propuestas: enviar produce `EN_DISENO → REVISION_CLIENTE`; observar devuelve a `EN_DISENO`; la conformidad de anteproyecto continúa en diseño y la conformidad de proyecto final produce `EXPEDIENTE_FINAL`. El endpoint genérico no puede producir `REVISION_CLIENTE` ni `EXPEDIENTE_FINAL`.
+
+`observaciones_cliente.id_cotizacion_adicional` conserva la trazabilidad comercial de una ronda posterior a las dos incluidas. La cotización y su pago adicional no cambian el estado del proyecto. Antes de continuar, el backend verifica cotización aceptada y suma de pagos `ADICIONAL` validados contra el adelanto requerido, siempre con `BigDecimal`.
+
 La visibilidad se aplica también en servicios: gestores ven todo, clientes solo lo propio y especialistas únicamente proyectos presentes en sus asignaciones. Ningún endpoint permite eliminar físicamente un proyecto.
 

@@ -83,6 +83,31 @@ class PagoServiceTest {
     }
   }
 
+  @Test void validarPagoAdicionalNoReiniciaElEstadoTecnicoNiCreaOtroExpediente() {
+    PagoRepository pagos=mock(PagoRepository.class);ProyectoRepository proyectos=mock(ProyectoRepository.class);
+    EmpleadoRepository empleados=mock(EmpleadoRepository.class);ExpedienteService expedientes=mock(ExpedienteService.class);
+    AutorizacionProyectoService acceso=mock(AutorizacionProyectoService.class);Proyecto proyecto=mock(Proyecto.class);
+    Empleado empleado=mock(Empleado.class);Usuario usuario=mock(Usuario.class);UUID proyectoId=UUID.randomUUID();UUID pagoId=UUID.randomUUID();
+    when(proyecto.getId()).thenReturn(proyectoId);when(proyecto.getEstado()).thenReturn(EstadoProyecto.EN_DISENO);
+    when(usuario.getCorreo()).thenReturn("admin@atelier.test");when(empleado.getUsuario()).thenReturn(usuario);when(acceso.usuario()).thenReturn(usuario);
+    Cotizacion cotizacion=new Cotizacion(proyecto,empleado,"COT-2026-0001-A01",(short)1,
+        TipoCotizacion.ADICIONAL,new BigDecimal("100.00"));
+    cotizacion.actualizar(new BigDecimal("100.00"),null,List.of(
+        new DetalleCotizacion("Cambios",null,BigDecimal.ONE,new BigDecimal("500.00"))),BigDecimal.ZERO);
+    cotizacion.responder(true,null,OffsetDateTime.now(ZoneOffset.UTC));
+    Pago pago=new Pago(cotizacion,TipoPago.ADICIONAL,MetodoPago.TRANSFERENCIA,new BigDecimal("500.00"),
+        "OP-A","https://cloudinary/adicional.pdf","atelier/test/adicional","raw","application/pdf",100,OffsetDateTime.now(ZoneOffset.UTC));
+    when(pagos.bloquear(pagoId)).thenReturn(Optional.of(pago));when(proyectos.bloquear(proyectoId)).thenReturn(Optional.of(proyecto));
+    when(empleados.findByUsuarioCorreoIgnoreCase("admin@atelier.test")).thenReturn(Optional.of(empleado));
+    PagoService service=new PagoService(pagos,mock(CotizacionRepository.class),proyectos,mock(HistorialEstadoRepository.class),
+        empleados,expedientes,acceso,mock(ArchivoStorage.class),mock(ValidadorArchivo.class),propiedades(),
+        mock(AuditoriaService.class),Clock.systemUTC());
+
+    service.validar(pagoId);
+
+    verify(proyecto,never()).cambiarEstado(any());verifyNoInteractions(expedientes);
+  }
+
   private AtelierProperties propiedades(){return new AtelierProperties(new AtelierProperties.Cors("http://localhost"),
       new AtelierProperties.Jwt("01234567890123456789012345678901","test",15,7),
       new AtelierProperties.Cookie("REFRESH",false),new AtelierProperties.Cloudinary("demo","key","secret"),

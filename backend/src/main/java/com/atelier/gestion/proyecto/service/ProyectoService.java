@@ -31,7 +31,8 @@ public class ProyectoService {
       Set.of(EstadoProyecto.SOLICITUD_REGISTRADA, EstadoProyecto.DATOS_INCOMPLETOS);
   private static final Set<EstadoProyecto> ESTADOS_GESTIONADOS_POR_FLUJO =
       Set.of(EstadoProyecto.COTIZACION_ENVIADA, EstadoProyecto.ESPERANDO_PAGO,
-          EstadoProyecto.PAGO_EN_REVISION, EstadoProyecto.PROYECTO_ACTIVO);
+          EstadoProyecto.PAGO_EN_REVISION, EstadoProyecto.PROYECTO_ACTIVO,
+          EstadoProyecto.REVISION_CLIENTE, EstadoProyecto.EXPEDIENTE_FINAL);
 
   private final ProyectoRepository proyectos;
   private final RequerimientoRepository requerimientos;
@@ -151,7 +152,7 @@ public class ProyectoService {
         .orElseThrow(() -> new RecursoNoEncontradoException("Proyecto no encontrado"));
     if (ESTADOS_GESTIONADOS_POR_FLUJO.contains(req.estado())) {
       throw new ReglaNegocioException(
-          "Este estado solo puede alcanzarse mediante cotización y validación de pagos");
+          "Este estado solo puede alcanzarse mediante su flujo de negocio específico");
     }
     EstadoProyecto anterior = proyecto.getEstado();
     if (anterior == EstadoProyecto.EN_ESTUDIOS && req.estado() == EstadoProyecto.EN_DISENO

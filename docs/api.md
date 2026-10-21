@@ -71,3 +71,17 @@ Las categorías habilitadas en esta fase son `EXPEDIENTE` y `ESTUDIO`. El especi
 
 Se admiten PDF, JPG/JPEG y PNG con extensión y MIME concordantes. La carpeta es `atelier/{ambiente}/proyectos/{codigo}/expediente` o `.../estudios`. Cada nueva versión retira lógicamente la anterior de la misma serie y estudio opcional. Si la transacción revierte se elimina el recurso recién subido; una eliminación explícita solo marca el registro no vigente después de que Cloudinary confirme la operación.
 
+## Propuestas y observaciones del cliente
+
+- `GET /proyectos/{id}/propuestas`: versiones visibles; el cliente no recibe borradores.
+- `POST /proyectos/{id}/propuestas`: `multipart/form-data` con `tipo`, `descripcion` opcional y `archivo`; gestores o especialista asignado, únicamente en `EN_DISENO`.
+- `GET /propuestas/{id}`: consulta sujeta a propiedad o asignación.
+- `POST /propuestas/{id}/enviar`: solo gestor; cambia el proyecto a `REVISION_CLIENTE`.
+- `POST /propuestas/{id}/respuesta`: cliente propietario; cuerpo `{conforme, observacion}`. Una respuesta no conforme exige observación.
+- `GET|POST /propuestas/{id}/observaciones`: consulta visible o creación por el cliente propietario.
+- `PATCH /observaciones-cliente/{id}`: gestor; cuerpo `{estado, adicional}`.
+
+Cada `tipo` (`ANTEPROYECTO` o `PROYECTO_FINAL`) conserva una secuencia de versiones y rondas independiente. Las rondas 1 y 2 no pueden marcarse adicionales. La ronda 3 y siguientes pueden vincular una cotización `ADICIONAL` pasando `observacionClienteId` al endpoint de creación de cotizaciones. Un pago para esta cotización debe usar `tipo=ADICIONAL`; su validación no reinicia el estado técnico ni crea otro expediente.
+
+La vista previa admite PDF, JPG/JPEG y PNG y persiste `secure_url`, `public_id`, nombre, MIME, tamaño y `resource_type`. Si PostgreSQL revierte, se ejecuta la compensación Cloudinary. Una propuesta observada pasa a `REEMPLAZADA` cuando se envía su nueva versión.
+
