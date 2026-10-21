@@ -52,3 +52,22 @@ Todos los importes usan dos decimales y `HALF_UP`. Las partidas son obligatorias
 
 El comprobante admite PDF, JPG, JPEG y PNG con extensión y MIME concordantes. Exceder `MAX_UPLOAD_BYTES` responde `400 INVALID_FILE`. La API almacena `secure_url`, `public_id`, MIME, tamaño, categoría y `resource_type`; si la transacción falla, solicita a Cloudinary eliminar el recurso recién cargado.
 
+## Ejecución técnica
+
+- `GET /especialidades`: cualquier usuario autenticado.
+- `POST /especialidades` y `PATCH /especialidades/{id}`: solo `ADMINISTRADOR`.
+- `GET|POST /proyectos/{id}/asignaciones` y `PATCH /asignaciones/{id}`: la consulta respeta visibilidad; la escritura requiere `ADMINISTRADOR` o `ENCARGADO`.
+- `GET|POST /asignaciones/{id}/tareas` y `PATCH /tareas/{id}`: los gestores crean; el especialista responsable actualiza avance sin cambiar la estructura de la tarea.
+- `GET|POST /proyectos/{id}/estudios` y `PATCH /estudios/{id}`: los gestores planifican y validan; el responsable puede actualizar avance y resultado, pero no validar ni marcar `NO_APLICA`.
+
+Las asignaciones y tareas usan transiciones centrales y estados terminales. Una asignación solo se finaliza cuando todas sus tareas están completadas o canceladas. Un estudio requerido no admite `NO_APLICA`; completar cualquier estudio exige resultado, fecha y documento vigente. Mientras exista un estudio requerido sin validar se bloquea `EN_ESTUDIOS → EN_DISENO`.
+
+## Documentos del expediente
+
+- `GET|POST /expedientes/{id}/documentos`: lista o carga `multipart/form-data` con `tipoDocumento`, `categoria`, `estudioId` opcional, `visibleCliente` y `archivo`.
+- `GET|DELETE /documentos/{id}`: obtiene o retira el documento.
+
+Las categorías habilitadas en esta fase son `EXPEDIENTE` y `ESTUDIO`. El especialista solo adjunta documentos al proyecto asignado y, para un estudio, debe ser su responsable; únicamente un gestor puede autorizar visibilidad al cliente. El cliente propietario recibe solo documentos vigentes y autorizados.
+
+Se admiten PDF, JPG/JPEG y PNG con extensión y MIME concordantes. La carpeta es `atelier/{ambiente}/proyectos/{codigo}/expediente` o `.../estudios`. Cada nueva versión retira lógicamente la anterior de la misma serie y estudio opcional. Si la transacción revierte se elimina el recurso recién subido; una eliminación explícita solo marca el registro no vigente después de que Cloudinary confirme la operación.
+

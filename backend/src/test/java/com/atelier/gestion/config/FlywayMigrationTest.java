@@ -26,7 +26,7 @@ class FlywayMigrationTest {
         .load()
         .migrate();
 
-    assertThat(result.migrationsExecuted).isEqualTo(5);
+    assertThat(result.migrationsExecuted).isEqualTo(6);
   }
 
   @Test @Order(2)

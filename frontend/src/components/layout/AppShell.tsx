@@ -3,6 +3,7 @@ import {
   Building2,
   FolderKanban,
   LayoutDashboard,
+  Layers3,
   LogOut,
   Menu,
   ReceiptText,
@@ -21,6 +22,7 @@ const links: { to: string; label: string; icon: typeof LayoutDashboard; roles?: 
   { to: '/pagos', label: 'Pagos', icon: ReceiptText, roles: ['ADMINISTRADOR'] },
   { to: '/clientes', label: 'Clientes', icon: Building2, roles: ['ADMINISTRADOR', 'ENCARGADO'] },
   { to: '/empleados', label: 'Empleados', icon: BriefcaseBusiness, roles: ['ADMINISTRADOR'] },
+  { to: '/especialidades', label: 'Especialidades', icon: Layers3, roles: ['ADMINISTRADOR'] },
   { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['ADMINISTRADOR'] },
 ];
 export function AppShell() {

@@ -26,6 +26,9 @@ const UsersPage = lazy(() =>
 const PaymentsPage = lazy(() =>
   import('../features/pagos/pages/PaymentsPage').then((m) => ({ default: m.PaymentsPage })),
 );
+const SpecialtiesPage = lazy(() =>
+  import('../features/especialidades/pages/SpecialtiesPage').then((m) => ({ default: m.SpecialtiesPage })),
+);
 function Home() {
   return (
     <main className="min-h-screen p-6 md:p-12">
@@ -70,6 +73,14 @@ export function App() {
             element={
               <ProtectedRoute roles={['ADMINISTRADOR']}>
                 <PaymentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/especialidades"
+            element={
+              <ProtectedRoute roles={['ADMINISTRADOR']}>
+                <SpecialtiesPage />
               </ProtectedRoute>
             }
           />

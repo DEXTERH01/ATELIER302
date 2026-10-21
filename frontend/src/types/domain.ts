@@ -156,3 +156,32 @@ export interface Expediente {
   creadoEn: string;
   cerradoEn: string | null;
 }
+export interface Especialidad { id: number; nombre: string; descripcion: string | null; activa: boolean }
+export type EstadoAsignacion = 'ACTIVA' | 'FINALIZADA' | 'CANCELADA';
+export interface Asignacion {
+  id: string; proyectoId: string; empleadoId: string; empleadoUsuarioId: string; empleado: string;
+  cargo: string; especialidadId: number; especialidad: string; rolProyecto: string;
+  fechaAsignacion: string; fechaFin: string | null; estado: EstadoAsignacion;
+}
+export type EstadoTarea = 'PENDIENTE' | 'EN_PROCESO' | 'BLOQUEADA' | 'COMPLETADA' | 'CANCELADA';
+export type PrioridadTarea = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA';
+export interface Tarea {
+  id: string; asignacionId: string; proyectoId: string; empleadoId: string; responsable: string;
+  especialidad: string; titulo: string; descripcion: string | null; prioridad: PrioridadTarea;
+  estado: EstadoTarea; fechaInicio: string | null; fechaLimite: string | null;
+  completadaEn: string | null; creadoEn: string;
+}
+export type EstadoEstudio = 'PENDIENTE' | 'EN_PROCESO' | 'COMPLETADO' | 'NO_APLICA';
+export interface Estudio {
+  id: string; proyectoId: string; responsableId: string | null; responsableUsuarioId: string | null;
+  responsable: string | null; tipo: string; proveedor: string | null; requerido: boolean;
+  estado: EstadoEstudio; fechaSolicitud: string | null; fechaResultado: string | null;
+  resultado: string | null; costo: number | null;
+}
+export type CategoriaDocumento = 'EXPEDIENTE' | 'ESTUDIO' | 'PROPUESTA' | 'TRAMITE' | 'RESOLUCION';
+export interface Documento {
+  id: string; expedienteId: string; proyectoId: string; estudioId: string | null; subidoPor: string;
+  autor: string; nombre: string; tipoDocumento: string; version: number; url: string; publicId: string;
+  formato: string; tipoMime: string; tamanoBytes: number; categoria: CategoriaDocumento;
+  resourceType: string; visibleCliente: boolean; vigente: boolean; creadoEn: string;
+}

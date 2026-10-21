@@ -24,16 +24,19 @@ public class CloudinaryArchivoStorage implements ArchivoStorage {
           String.valueOf(resultado.get("public_id")), String.valueOf(resultado.get("resource_type")),
           archivo.getContentType(), archivo.getSize());
     } catch (IOException | RuntimeException ex) {
-      log.error("No se pudo cargar el comprobante en Cloudinary", ex);
-      throw new ReglaNegocioException("No fue posible almacenar el comprobante");
+      log.error("No se pudo cargar el archivo en Cloudinary", ex);
+      throw new ReglaNegocioException("No fue posible almacenar el archivo");
     }
   }
 
-  @Override public void eliminar(String publicId, String resourceType) {
+  @Override public boolean eliminar(String publicId, String resourceType) {
     try {
-      cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", resourceType));
+      Map<?,?> resultado=cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", resourceType));
+      String estado=String.valueOf(resultado.get("result"));
+      return "ok".equalsIgnoreCase(estado)||"not found".equalsIgnoreCase(estado);
     } catch (IOException | RuntimeException ex) {
       log.error("Falló la compensación de Cloudinary para publicId={}", publicId, ex);
+      return false;
     }
   }
 }

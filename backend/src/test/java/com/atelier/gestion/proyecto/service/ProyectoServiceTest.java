@@ -10,6 +10,7 @@ import com.atelier.gestion.cliente.entity.Cliente;
 import com.atelier.gestion.cliente.repository.ClienteRepository;
 import com.atelier.gestion.cliente.service.ClienteService;
 import com.atelier.gestion.empleado.service.EmpleadoService;
+import com.atelier.gestion.estudio.repository.EstudioTecnicoRepository;
 import com.atelier.gestion.proyecto.dto.ProyectoDtos.Crear;
 import com.atelier.gestion.proyecto.dto.ProyectoDtos.Transicion;
 import com.atelier.gestion.common.exception.ReglaNegocioException;
@@ -33,12 +34,13 @@ class ProyectoServiceTest {
   @Mock PoliticaEstadosProyecto politica;
   @Mock SesionActual sesion;
   @Mock AuditoriaService auditoria;
+  @Mock EstudioTecnicoRepository estudios;
   ProyectoService service;
 
   @BeforeEach void setUp() {
     MockitoAnnotations.openMocks(this);
     service = new ProyectoService(proyectos, requerimientos, historial, clientes, clienteService,
-        empleadoService, correlativos, politica, sesion, auditoria);
+        empleadoService, correlativos, politica, sesion, auditoria, estudios);
   }
 
   @Test void clienteCreaProyectoSoloParaSuPropioPerfilEIgnoraEncargadoSolicitado() {
@@ -72,5 +74,20 @@ class ProyectoServiceTest {
     assertThatThrownBy(()->service.transicionar(id,new Transicion(EstadoProyecto.PROYECTO_ACTIVO,null)))
         .isInstanceOf(ReglaNegocioException.class).hasMessageContaining("cotización");
     verifyNoInteractions(politica);
+  }
+
+  @Test void noPermiteIniciarDisenoMientrasExistanEstudiosRequeridosPendientes() {
+    UUID id=UUID.randomUUID();Rol rol=mock(Rol.class);Usuario usuario=mock(Usuario.class);
+    Proyecto proyecto=mock(Proyecto.class);
+    when(rol.getNombre()).thenReturn("ENCARGADO");when(usuario.getRol()).thenReturn(rol);
+    when(sesion.usuario()).thenReturn(usuario);when(proyectos.bloquear(id)).thenReturn(java.util.Optional.of(proyecto));
+    when(proyecto.getEstado()).thenReturn(EstadoProyecto.EN_ESTUDIOS);
+    when(estudios.countByProyectoIdAndRequeridoTrueAndEstadoNot(id,
+        com.atelier.gestion.estudio.entity.EstadoEstudio.COMPLETADO)).thenReturn(1L);
+
+    assertThatThrownBy(()->service.transicionar(id,new Transicion(EstadoProyecto.EN_DISENO,null)))
+        .isInstanceOf(ReglaNegocioException.class).hasMessageContaining("estudios requeridos");
+    verifyNoInteractions(politica);
+    verify(proyecto,never()).cambiarEstado(any());
   }
 }

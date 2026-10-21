@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, CheckCircle2, ClipboardList, History, Landmark, Trash2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ClipboardList, FileArchive, FlaskConical, History, Landmark, Trash2, UsersRound } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PageHeader } from '../../../components/layout/PageHeader';
@@ -9,6 +9,9 @@ import type { EstadoProyecto } from '../../../types/domain';
 import * as api from '../api/proyectosApi';
 import { estadoEtiquetas, siguientesEstados } from '../projectState';
 import { ProjectCommercialPanel } from '../../cotizaciones/components/ProjectCommercialPanel';
+import { TeamTasksPanel } from '../../asignaciones/components/TeamTasksPanel';
+import { StudiesPanel } from '../../estudios/components/StudiesPanel';
+import { DocumentsPanel } from '../../expedientes/components/DocumentsPanel';
 
 const campo = 'rounded-lg border border-atelier-stone bg-white px-3 py-2.5';
 const fechaHora = new Intl.DateTimeFormat('es-PE', {
@@ -20,7 +23,7 @@ export function ProjectDetailPage() {
   const { id = '' } = useParams();
   const { usuario } = useAuth();
   const qc = useQueryClient();
-  const [tab, setTab] = useState<'requerimientos' | 'comercial' | 'historial'>('requerimientos');
+  const [tab, setTab] = useState<'requerimientos' | 'comercial' | 'equipo' | 'estudios' | 'documentos' | 'historial'>('requerimientos');
   const proyecto = useQuery({ queryKey: ['proyecto', id], queryFn: () => api.obtener(id), enabled: !!id });
   const requisitos = useQuery({
     queryKey: ['proyecto', id, 'requerimientos'],
@@ -113,7 +116,28 @@ export function ProjectDetailPage() {
               <p className="mt-6 border-t border-atelier-stone pt-5 text-neutral-700">{p.descripcion}</p>
             )}
           </article>
-          <div className="mt-6 flex gap-2 border-b border-atelier-stone">
+          <div className="mt-6 flex gap-1 overflow-x-auto border-b border-atelier-stone whitespace-nowrap">
+            <button
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'equipo' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
+              onClick={() => setTab('equipo')}
+            >
+              <UsersRound size={17} />
+              Equipo y tareas
+            </button>
+            <button
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'estudios' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
+              onClick={() => setTab('estudios')}
+            >
+              <FlaskConical size={17} />
+              Estudios
+            </button>
+            <button
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'documentos' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
+              onClick={() => setTab('documentos')}
+            >
+              <FileArchive size={17} />
+              Expediente
+            </button>
             <button
               className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold ${tab === 'comercial' ? 'border-b-2 border-atelier-accent text-atelier-accent' : ''}`}
               onClick={() => setTab('comercial')}
@@ -213,6 +237,12 @@ export function ProjectDetailPage() {
             </section>
           ) : tab === 'comercial' ? (
             <ProjectCommercialPanel proyecto={p} />
+          ) : tab === 'equipo' ? (
+            <TeamTasksPanel proyecto={p} />
+          ) : tab === 'estudios' ? (
+            <StudiesPanel proyecto={p} />
+          ) : tab === 'documentos' ? (
+            <DocumentsPanel proyecto={p} />
           ) : (
             <section className="mt-4 grid gap-3">
               {historial.data?.map((h) => (

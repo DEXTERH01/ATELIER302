@@ -19,7 +19,7 @@ public class ValidadorArchivo {
   public ValidadorArchivo(AtelierProperties propiedades) { this.propiedades = propiedades; }
 
   public void validar(MultipartFile archivo) {
-    if (archivo == null || archivo.isEmpty()) throw new ArchivoInvalidoException("El comprobante es obligatorio");
+    if (archivo == null || archivo.isEmpty()) throw new ArchivoInvalidoException("El archivo es obligatorio");
     if (archivo.getSize() > propiedades.files().maxUploadBytes())
       throw new ArchivoInvalidoException("El archivo supera el tamaño máximo permitido");
     String extension = StringUtils.lowerCase(FilenameUtils.getExtension(archivo.getOriginalFilename()));

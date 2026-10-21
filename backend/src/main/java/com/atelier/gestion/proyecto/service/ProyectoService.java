@@ -11,6 +11,8 @@ import com.atelier.gestion.common.exception.RecursoNoEncontradoException;
 import com.atelier.gestion.common.exception.ReglaNegocioException;
 import com.atelier.gestion.empleado.entity.Empleado;
 import com.atelier.gestion.empleado.service.EmpleadoService;
+import com.atelier.gestion.estudio.entity.EstadoEstudio;
+import com.atelier.gestion.estudio.repository.EstudioTecnicoRepository;
 import com.atelier.gestion.proyecto.entity.*;
 import com.atelier.gestion.proyecto.repository.*;
 import com.atelier.gestion.security.SesionActual;
@@ -41,11 +43,13 @@ public class ProyectoService {
   private final PoliticaEstadosProyecto politica;
   private final SesionActual sesion;
   private final AuditoriaService auditoria;
+  private final EstudioTecnicoRepository estudios;
 
   public ProyectoService(ProyectoRepository proyectos, RequerimientoRepository requerimientos,
       HistorialEstadoRepository historial, ClienteRepository clientes, ClienteService clienteService,
       EmpleadoService empleadoService, CorrelativoProyectoService correlativos,
-      PoliticaEstadosProyecto politica, SesionActual sesion, AuditoriaService auditoria) {
+      PoliticaEstadosProyecto politica, SesionActual sesion, AuditoriaService auditoria,
+      EstudioTecnicoRepository estudios) {
     this.proyectos = proyectos;
     this.requerimientos = requerimientos;
     this.historial = historial;
@@ -56,6 +60,7 @@ public class ProyectoService {
     this.politica = politica;
     this.sesion = sesion;
     this.auditoria = auditoria;
+    this.estudios = estudios;
   }
 
   @Transactional(readOnly = true)
@@ -149,6 +154,10 @@ public class ProyectoService {
           "Este estado solo puede alcanzarse mediante cotización y validación de pagos");
     }
     EstadoProyecto anterior = proyecto.getEstado();
+    if (anterior == EstadoProyecto.EN_ESTUDIOS && req.estado() == EstadoProyecto.EN_DISENO
+        && estudios.countByProyectoIdAndRequeridoTrueAndEstadoNot(id, EstadoEstudio.COMPLETADO) > 0) {
+      throw new ReglaNegocioException("Todos los estudios requeridos deben estar validados");
+    }
     long obligatorios = requerimientos.countByProyectoIdAndObligatorioTrue(id);
     long pendientes = requerimientos.countByProyectoIdAndObligatorioTrueAndCompletadoFalse(id);
     politica.validar(anterior, req.estado(), proyecto.isRequiereTramitePublico(), obligatorios,

@@ -18,7 +18,15 @@ Una transición obtiene un bloqueo pesimista, valida la regla, actualiza `proyec
 
 Los estados `COTIZACION_ENVIADA`, `ESPERANDO_PAGO`, `PAGO_EN_REVISION` y `PROYECTO_ACTIVO` no se aceptan desde la transición genérica: pertenecen al flujo comercial. Cotizaciones y pagos bloquean las filas relevantes, conservan versiones anteriores y escriben el historial en la misma transacción. La validación suma únicamente pagos `ADELANTO` en estado `VALIDADO`; al alcanzar el porcentaje requerido crea el expediente mediante una operación idempotente protegida por el bloqueo del proyecto y una restricción única.
 
-La carga Cloudinary ocurre antes de confirmar la transacción. Se registra una sincronización transaccional que elimina el `public_id` usando el `resource_type` real cuando el commit no se completa. La eliminación compensatoria se registra si Cloudinary no responde para permitir conciliación operativa.
+La carga Cloudinary ocurre antes de confirmar la transacción. Se registra una sincronización transaccional que elimina el `public_id` usando el `resource_type` real cuando el commit no se completa. Para retirar un documento, Cloudinary debe confirmar primero la eliminación; si no lo hace, PostgreSQL conserva el documento vigente y devuelve un error de negocio para reintento o conciliación.
+
+## Agregado de ejecución técnica
+
+`Proyecto` gobierna asignaciones, tareas y estudios. Los servicios bloquean o validan el proyecto y aplican una matriz de permisos adicional a la seguridad HTTP: los gestores administran la planificación; el especialista trabaja solo en su asignación activa y el cliente conserva acceso de lectura acotado.
+
+Crear un estudio obligatorio desde `PROYECTO_ACTIVO` produce `EN_ESTUDIOS` e historial dentro de la misma transacción. Un estudio solo queda `COMPLETADO` si tiene resultado, fecha y documento vigente. Al validar el último requerido, el servicio bloquea el proyecto, cambia a `EN_DISENO` y agrega el historial; la transición manual aplica la misma guarda.
+
+Los documentos se versionan por expediente, tipo, categoría y estudio opcional. El registro anterior permanece para trazabilidad pero deja de estar vigente. Las relaciones se conservan y ningún flujo de esta fase elimina físicamente proyectos, asignaciones, tareas, estudios o documentos.
 
 La visibilidad se aplica también en servicios: gestores ven todo, clientes solo lo propio y especialistas únicamente proyectos presentes en sus asignaciones. Ningún endpoint permite eliminar físicamente un proyecto.
 

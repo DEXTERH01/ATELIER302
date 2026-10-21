@@ -84,6 +84,23 @@ El proxy de Netlify usa el host definido en `frontend/netlify.toml`; debe coinci
 4. Repite el envío con un archivo de extensión/MIME incompatible o mayor al límite: la API debe responder `400 INVALID_FILE`.
 5. Fuerza un fallo de base de datos después de una carga en un entorno de prueba y verifica en los logs que la compensación elimine el `public_id` de Cloudinary.
 
+## Funcionalidad de Fase 4
+
+- El administrador mantiene el catálogo de especialidades. Administradores y encargados asignan el equipo técnico, crean tareas y planifican estudios.
+- Cada especialista accede solo a proyectos con una asignación activa y puede actualizar únicamente sus propias tareas y estudios. Las asignaciones finalizadas no pueden reactivarse.
+- Un estudio obligatorio lleva el proyecto a `EN_ESTUDIOS`. Para validarlo como completado se exige resultado, fecha y un entregable vigente; el último estudio obligatorio validado inicia `EN_DISENO` y registra el historial en la misma transacción.
+- Las pestañas **Equipo y tareas**, **Estudios** y **Expediente** reúnen la ejecución técnica. El cliente ve únicamente documentos marcados expresamente como visibles.
+- Los documentos PDF/JPG/PNG guardan URL segura, `public_id`, MIME, tamaño, categoría y `resource_type`. Un rollback compensa la carga; al retirar un archivo se exige primero la confirmación de Cloudinary y después se actualiza PostgreSQL.
+
+### Recorrido manual de aceptación técnica
+
+1. Como administrador, crea una especialidad; como encargado, asigna un especialista y crea una tarea desde **Equipo y tareas**.
+2. Como especialista asignado, inicia y completa la tarea. Comprueba que no puedas alterar título, fechas o prioridad ni operar sobre asignaciones ajenas.
+3. Como encargado, registra un estudio obligatorio: el proyecto debe pasar a `EN_ESTUDIOS`. Intenta validarlo sin archivo y confirma el rechazo.
+4. Sube un PDF desde **Expediente**, categoría `ESTUDIO`, asociado al estudio; valida el estudio y comprueba el paso automático a `EN_DISENO` cuando no queden obligatorios pendientes.
+5. Autoriza como gestor un documento del expediente y confirma que el cliente propietario pueda abrirlo. Los archivos no autorizados no deben aparecer para el cliente.
+6. Simula una respuesta fallida de eliminación de Cloudinary: la API debe devolver `422` y el documento debe permanecer vigente.
+
 ## Validación
 
 ```powershell
